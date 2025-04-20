@@ -6,7 +6,7 @@ app.use(express.json());
 
 app.use(router);
 
-app.listen(3333, () => {
+app.listen(3434, () => {
   console.log("Server is running on 3333...");
 });
 
