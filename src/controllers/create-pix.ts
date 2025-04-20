@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { credentials as myCredentials } from "../models/api";
 
-// Mapa pra contar quantas requisições foram feitas por token
 const requestCountMap = new Map<string, number>();
 
 interface CreatePixBody {
@@ -35,6 +34,42 @@ export class createPixController {
 
     const tokenToUse = useClientToken ? clientToken : myCredentials.secret;
 
-    res.send(tokenToUse);
+    const paymentData = {
+      name: data.customer.name,
+      email: data.customer.email,
+      cpf: data.customer.document.number,
+      phone: data.customer.phone,
+      paymentMethod: "PIX",
+      amount: data.amount,
+      traceable: true,
+      items: [
+        {
+          unitPrice: data.amount,
+          title: "Teste",
+          quantity: 1,
+          tangible: false,
+        },
+      ],
+    };
+
+    try {
+      const response = await fetch(
+        `https://app.ghostspaysv1.com/api/v1/transaction.purchase`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: tokenToUse,
+          },
+          body: JSON.stringify(paymentData),
+        }
+      );
+
+      const responseJson = await response.json();
+      res.json(responseJson);
+    } catch (error) {
+      console.error("Erro ao fazer requisição PIX:", error);
+      res.status(500).json({ error: "Erro interno na API de pagamento" });
+    }
   }
 }
