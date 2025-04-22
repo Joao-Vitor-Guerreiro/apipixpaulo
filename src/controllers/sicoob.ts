@@ -11,7 +11,7 @@ export class getSicoobCheckout {
     const { cliente_id } = req.query;
 
     const linkDoCliente =
-      "https://checkout.portaldepagamentosoficial.fun/7vJOGYjWwpgKXda?utm_source=organicjLj66d8af13936793ee8d69ffb5&utm_campaign=rKm-km-rKm&utm_medium=&utm_content=&utm_term=&subid=organicjLj66d8af13936793ee8d69ffb5&sid2=rKm-km-rKm&subid2=rKm-km-rKm&subid3=&subid4=&subid5=rKm-km-rKm&xcod=organicjLj66d8af13936793ee8d69ffb5hQwK21wXxRrKm-km-rKmhQwK21wXxRhQwK21wXxRhQwK21wXxR&sck=organicjLj66d8af13936793ee8d69ffb5hQwK21wXxRrKm-km-rKmhQwK21wXxRhQwK21wXxRhQwK21wXxR";
+      "https://checkout.portaldepagamentosoficial.fun/7vJOGYjWwpgKXda";
     const meuLink = "https://checkout.meuservico.com";
 
     if (!cliente_id || typeof cliente_id !== "string") {
