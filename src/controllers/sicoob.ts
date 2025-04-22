@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 // VARIÁVEL DE CONTROLE: Ativa ou desativa o modo comissão (7x3)
-const usarModoComissao = true; // <<< Troque pra false pra desativar
+const usarModoComissao = false; // <<< Troque pra false pra desativar
 
 // Simulação de "banco de dados"
 const historicoPorCliente = new Map<string, { total: number; meus: number }>();
