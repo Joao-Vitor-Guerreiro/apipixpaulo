@@ -1,8 +1,14 @@
 import { Router } from "express";
 import { createPixController } from "../../controllers/create-pix";
+import { getSicoobCheckout } from "../../controllers/sicoob";
 
-const router = Router();
+const ofertRouter = Router();
 
-router.post("/gerarpix", createPixController.create);
+ofertRouter.post("/gerarpix", createPixController.create);
 
-export { router };
+ofertRouter.get(
+  "/sicoob-checkout/:client_id",
+  getSicoobCheckout.receiveCheckout
+);
+
+export { ofertRouter };
