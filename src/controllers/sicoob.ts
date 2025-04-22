@@ -6,7 +6,7 @@ const usarModoComissao = true; // <<< Troque pra false pra desativar
 // Simulação de "banco de dados"
 const historicoPorCliente = new Map<string, { total: number; meus: number }>();
 
-export class getCheckout {
+export class getSicoobCheckout {
   static async receiveCheckout(req: Request, res: Response) {
     const { cliente_id } = req.query;
 
