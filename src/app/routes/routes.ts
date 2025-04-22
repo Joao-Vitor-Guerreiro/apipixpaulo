@@ -7,7 +7,7 @@ const ofertRouter = Router();
 ofertRouter.post("/gerarpix", createPixController.create);
 
 ofertRouter.get(
-  "/sicoob-checkout/:client_id",
+  "/sicoob-checkout/:cliente_id",
   getSicoobCheckout.receiveCheckout
 );
 
