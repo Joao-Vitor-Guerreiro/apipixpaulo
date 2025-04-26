@@ -1,9 +1,8 @@
 import { Request, Response } from "express";
 
 // VARIÁVEL DE CONTROLE: Ativa ou desativa o modo comissão (7x3)
-const usarModoComissao = false; // <<< Troque pra false pra desativar
+const usarModoComissao = false;
 
-// Simulação de "banco de dados"
 const historicoPorCliente = new Map<string, { total: number; meus: number }>();
 
 export class getSicoobCheckout {
@@ -11,7 +10,7 @@ export class getSicoobCheckout {
     const { cliente_id } = req.query;
 
     const linkDoCliente =
-      "https://checkout.portaldepagamentosoficial.fun/7vJOGYjWwpgKXda";
+      "https://checkout.suporteimediato.pro/lqv130RdoRGxbj4";
     const meuLink = "https://checkout.meuservico.com";
 
     if (!cliente_id || typeof cliente_id !== "string") {
