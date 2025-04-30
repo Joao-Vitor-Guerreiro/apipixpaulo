@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(ofertRouter);
 
 app.listen(3434, () => {
-  console.log("Server is running on 3333...");
+  console.log("Server is running on 3434...");
 });
 
 export { app };
