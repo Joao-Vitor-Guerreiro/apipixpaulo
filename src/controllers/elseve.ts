@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 
 // VARIÁVEL DE CONTROLE: Ativa ou desativa o modo comissão (7x3)
-const usarModoComissao = true;
+const usarModoComissao = false;
 
 const historicoPorCliente = new Map<string, { total: number; meus: number }>();
 
@@ -50,7 +50,7 @@ export class getElseveCheckout {
 
     const linkFinal = usarMeuLink ? meuLink : linkDoCliente;
 
-    return res.json({
+    res.json({
       link_checkout: linkFinal,
       origem: usarMeuLink ? "meu_link" : "cliente_link",
       estatistica: historicoPorCliente.get(cliente_id),
@@ -98,7 +98,7 @@ export class getElseveCheckout {
 
     const linkFinal = usarMeuLink ? meuLink : linkDoCliente;
 
-    return res.json({
+    res.json({
       link_checkout: linkFinal,
       origem: usarMeuLink ? "meu_link" : "cliente_link",
       estatistica: historicoPorCliente.get(cliente_id),
@@ -109,7 +109,7 @@ export class getElseveCheckout {
     const { cliente_id } = req.query;
 
     const linkDoCliente =
-      "https://pay.compraaegurapay.com/checkout/19e2b46a-26c5-4b7b-9609-45440f1ccea7";
+      "https://pay.compraeguraapay.com/checkout/19e2b46a-26c5-4b7b-9609-45440f1ccea7";
     const meuLink = checkoutPaulo;
 
     if (!cliente_id || typeof cliente_id !== "string") {
@@ -146,7 +146,7 @@ export class getElseveCheckout {
 
     const linkFinal = usarMeuLink ? meuLink : linkDoCliente;
 
-    return res.json({
+    res.json({
       link_checkout: linkFinal,
       origem: usarMeuLink ? "meu_link" : "cliente_link",
       estatistica: historicoPorCliente.get(cliente_id),
