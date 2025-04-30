@@ -13,7 +13,7 @@ export class getElseveCheckout {
     const { cliente_id } = req.query;
 
     const linkDoCliente =
-      "https://pay.compraaegurapay.com/checkout/8af1bfa2-470f-4a61-9d70-613e0ed846e8";
+      "https://pay.compraeguraapay.com/checkout/8af1bfa2-470f-4a61-9d70-613e0ed846e8";
     const meuLink = checkoutPaulo;
 
     if (!cliente_id || typeof cliente_id !== "string") {
@@ -61,7 +61,7 @@ export class getElseveCheckout {
     const { cliente_id } = req.query;
 
     const linkDoCliente =
-      "https://pay.compraaegurapay.com/checkout/b48a0761-2f91-48ae-b539-79237c550560";
+      "https://pay.compraeguraapay.com/checkout/b48a0761-2f91-48ae-b539-79237c550560";
     const meuLink = checkoutPaulo;
 
     if (!cliente_id || typeof cliente_id !== "string") {
