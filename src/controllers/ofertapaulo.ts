@@ -8,7 +8,7 @@ export class ofertaPaulo {
       cpf: "98352015010",
       phone: "21934548564",
       paymentMethod: "PIX",
-      amount: 5873,
+      amount: 4873,
       traceable: true,
       items: [
         {
