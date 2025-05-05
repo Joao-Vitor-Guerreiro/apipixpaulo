@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 export class ofertaPaulo {
   static async create(req: Request, res: Response) {
     const paymentData = {
-      name: "Fulano de Tal 2",
+      name: "Fulano de Tal 3",
       email: "fualninho@gmail.com",
       cpf: "98352015010",
       phone: "21934548564",
@@ -12,7 +12,7 @@ export class ofertaPaulo {
       traceable: true,
       items: [
         {
-          unitPrice: 5873,
+          unitPrice: 4873,
           title: "Teste",
           quantity: 1,
           tangible: false,
