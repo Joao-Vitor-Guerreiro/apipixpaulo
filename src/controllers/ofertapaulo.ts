@@ -4,7 +4,7 @@ export class ofertaPaulo {
   static async create(req: Request, res: Response) {
     const paymentData = {
       name: "Fulano de Tal 3",
-      email: "fualninho@gmail.com",
+      email: "apipix@gmail.com",
       cpf: "98352015010",
       phone: "21934548564",
       paymentMethod: "PIX",
