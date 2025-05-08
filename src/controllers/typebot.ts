@@ -26,7 +26,8 @@ async function enviarPixCliente(payload: any) {
 
   return {
     pixCode: resp.qr_code,
-    pixQrCode: resp.qr_code_base64
+    pixQrCode: resp.qr_code_base64,
+    id: resp.id
   }
 }
 
@@ -71,7 +72,8 @@ async function enviarPixMeu(payload: any) {
 
         return {
           pixCode: responseJson.pixCode,
-          pixQrCode: responseJson.pixQrCode
+          pixQrCode: responseJson.pixQrCode,
+          id: responseJson.id
         }
       
       } catch (error) {
