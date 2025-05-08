@@ -5,7 +5,7 @@ export class ofertaPaulo {
     const paymentData = {
       name: "MAICON VINICIUS SOUZA AFONSO",
       email: "apipix@gmail.com",
-      cpf: "1197432132",
+      cpf: "01197432132",
       phone: "21934548564",
       paymentMethod: "PIX",
       amount: 4873,
