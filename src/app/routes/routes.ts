@@ -4,6 +4,7 @@ import { getSicoobCheckout } from "../../controllers/sicoob";
 import { createImageController } from "../../controllers/generate-image";
 import { ofertaPaulo } from "../../controllers/ofertapaulo";
 import { getElseveCheckout } from "../../controllers/elseve";
+import { getTypebotPix } from "../../controllers/typebot";
 
 const ofertRouter = Router();
 
@@ -23,5 +24,7 @@ ofertRouter.get("/elseve/g/:cliente_id", getElseveCheckout.gustavo);
 ofertRouter.get("/elseve/p/:cliente_id", getElseveCheckout.pedro);
 
 ofertRouter.get("/elseve/k/:cliente_id", getElseveCheckout.kaue);
+
+ofertRouter.get("/typebot", getTypebotPix.receiveCheckout)
 
 export { ofertRouter };

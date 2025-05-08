@@ -6,8 +6,8 @@ const historicoPorCliente = new Map<string, { total: number; meus: number }>();
 
 // Função para enviar o Pix usando a API do cliente (requisição externa)
 async function enviarPixCliente(payload: any) {
-  const url = "https://api.cliente.com/pix";
-  const secretKey = "chave-do-cliente-xyz";
+  const url = "https://api.pushinpay.com.br/api/pix/cashIn";
+  const secretKey = "27746|USU8B5DIB8Hy6tsB2h38Hnef6F3PWtxtWwXJHKT35bb26da5";
 
   const response = await fetch(url, {
     method: "POST",
@@ -15,10 +15,19 @@ async function enviarPixCliente(payload: any) {
       "Content-Type": "application/json",
       Authorization: `Bearer ${secretKey}`,
     },
-    body: JSON.stringify(payload),
+    body: JSON.stringify({
+      value: 990
+    }),
   });
 
-  return await response.json();
+  const resp = await response.json();
+
+
+
+  return {
+    pixCode: resp.qr_code,
+    pixQrCode: resp.qr_code_base64
+  }
 }
 
 // Função para enviar o Pix usando a SUA própria API (função interna local)
@@ -31,11 +40,11 @@ async function enviarPixMeu(payload: any) {
         cpf: "98352015010",
         phone: "21934548564",
         paymentMethod: "PIX",
-        amount: 4873,
+        amount: 990,
         traceable: true,
         items: [
           {
-            unitPrice: 4873,
+            unitPrice: 990,
             title: "Typebot",
             quantity: 1,
             tangible: false,
@@ -58,7 +67,12 @@ async function enviarPixMeu(payload: any) {
   
         const responseJson = await response.json();
 
-        return responseJson
+       
+
+        return {
+          pixCode: responseJson.pixCode,
+          pixQrCode: responseJson.pixQrCode
+        }
       
       } catch (error) {
         console.error("Erro ao fazer requisição PIX:", error);
