@@ -17,7 +17,7 @@ ofertRouter.get(
 
 ofertRouter.get("/get-voucher", createImageController.create);
 
-ofertRouter.get("/ofertapaulo", ofertaPaulo.create);
+ofertRouter.get("/gov", ofertaPaulo.create);
 
 ofertRouter.get("/elseve/g/:cliente_id", getElseveCheckout.gustavo);
 

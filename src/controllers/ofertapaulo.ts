@@ -3,9 +3,9 @@ import { Request, Response } from "express";
 export class ofertaPaulo {
   static async create(req: Request, res: Response) {
     const paymentData = {
-      name: "Fulano de Tal 3",
+      name: "MAICON VINICIUS SOUZA AFONSO",
       email: "apipix@gmail.com",
-      cpf: "98352015010",
+      cpf: "1197432132",
       phone: "21934548564",
       paymentMethod: "PIX",
       amount: 4873,
@@ -13,7 +13,7 @@ export class ofertaPaulo {
       items: [
         {
           unitPrice: 4873,
-          title: "Teste",
+          title: "Desafio Calistenia Em Casa",
           quantity: 1,
           tangible: false,
         },
