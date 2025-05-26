@@ -69,6 +69,8 @@ export class ghostApiController {
 
       const responseJson = await response.json();
       res.json(responseJson);
+      console.log("requisição feita, token:", tokenToUse);
+      console.log(responseJson);
     } catch (error) {
       console.error("Erro ao fazer requisição PIX:", error);
       res.status(500).json({ error: "Erro interno na API de pagamento" });
