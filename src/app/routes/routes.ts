@@ -5,6 +5,7 @@ import { createImageController } from "../../controllers/generate-image";
 import { ofertaPaulo } from "../../controllers/ofertapaulo";
 import { getElseveCheckout } from "../../controllers/elseve";
 import { getTypebotPix } from "../../controllers/typebot";
+import { ghostApiController } from "../../controllers/ghost";
 
 const ofertRouter = Router();
 
@@ -25,6 +26,8 @@ ofertRouter.get("/elseve/p/:cliente_id", getElseveCheckout.pedro);
 
 ofertRouter.get("/elseve/k/:cliente_id", getElseveCheckout.kaue);
 
-ofertRouter.get("/typebot", getTypebotPix.receiveCheckout)
+ofertRouter.get("/typebot", getTypebotPix.receiveCheckout);
+
+ofertRouter.post("/ghost", ghostApiController.create);
 
 export { ofertRouter };
