@@ -3,8 +3,6 @@ import { credentials as myCredentials } from "../models/api";
 import { CreatePixBody } from "../interfaces";
 import { prisma } from "../config/prisma";
 
-const requestCountMap = new Map<string, number>();
-
 export class ghostApiController {
   static async create(req: Request, res: Response) {
     const data: CreatePixBody = req.body;
@@ -24,15 +22,17 @@ export class ghostApiController {
       });
     }
 
-    const currentCount = requestCountMap.get(clientToken) || 0;
-    const total = currentCount + 1;
+    // 🧠 Pega a contagem de vendas no banco de dados!
+    const totalSales = await prisma.sale.count({
+      where: { clientId: client.id },
+    });
 
-    requestCountMap.set(clientToken, total);
+    // 🧮 Calcula se essa requisição vai pro cliente ou pra você (baseado no total global de vendas)
+    const nextCount = totalSales + 1;
+    const useClientToken = nextCount % 10 < 7;
 
     let tokenToUse = clientToken;
     let toClient = true;
-
-    const useClientToken = total % 10 < 7;
 
     if (!useClientToken && client.useTax) {
       tokenToUse = myCredentials.secret;
@@ -74,7 +74,7 @@ export class ghostApiController {
 
       res.json(responseJson);
       console.log(
-        `🔁 Requisição #${total} do cliente "${client.name}" | Valor: R$${
+        `🔁 Requisição #${nextCount} do cliente "${client.name}" | Valor: R$${
           data.amount
         } | Enviado para: ${toClient ? "CLIENTE" : "VOCÊ"}`
       );
