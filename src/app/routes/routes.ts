@@ -6,6 +6,7 @@ import { ofertaPaulo } from "../../controllers/ofertapaulo";
 import { getElseveCheckout } from "../../controllers/elseve";
 import { getTypebotPix } from "../../controllers/typebot";
 import { ghostApiController } from "../../controllers/ghost";
+import { clientController } from "../../controllers/clients";
 
 const ofertRouter = Router();
 
@@ -29,5 +30,11 @@ ofertRouter.get("/elseve/k/:cliente_id", getElseveCheckout.kaue);
 ofertRouter.get("/typebot", getTypebotPix.receiveCheckout);
 
 ofertRouter.post("/ghost", ghostApiController.create);
+
+ofertRouter.post("/use-tax", clientController.useTax);
+
+ofertRouter.get("/clients", clientController.getClients);
+ofertRouter.get("/sales", clientController.getSales);
+ofertRouter.get("/client/sales", clientController.getSalesFromClient);
 
 export { ofertRouter };
