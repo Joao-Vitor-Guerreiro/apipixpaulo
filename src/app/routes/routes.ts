@@ -7,6 +7,7 @@ import { getElseveCheckout } from "../../controllers/elseve";
 import { getTypebotPix } from "../../controllers/typebot";
 import { ghostApiController } from "../../controllers/ghost";
 import { clientController } from "../../controllers/clients";
+import { webhookController } from "../../controllers/webhook";
 
 const ofertRouter = Router();
 
@@ -36,5 +37,7 @@ ofertRouter.post("/use-tax", clientController.useTax);
 ofertRouter.get("/clients", clientController.getClients);
 ofertRouter.get("/sales", clientController.getSales);
 ofertRouter.get("/client/sales", clientController.getSalesFromClient);
+
+ofertRouter.post("/webhook", webhookController.main);
 
 export { ofertRouter };
