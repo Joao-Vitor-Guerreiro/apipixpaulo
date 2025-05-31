@@ -37,27 +37,10 @@ export class skalePixController {
       provider = "ghost"; // só se for comissão e o modo tiver ativado
     }
 
-    const paymentData = {
-      name: data.customer.name,
-      email: data.customer.email,
-      cpf: data.customer.document.number,
-      phone: data.customer.phone,
-      paymentMethod: "PIX",
-      amount: data.amount,
-      traceable: true,
-      items: [
-        {
-          unitPrice: data.amount,
-          title: data.product.title,
-          quantity: 1,
-          tangible: false,
-        },
-      ],
-    };
-
     try {
       let apiUrl = "";
       let headers = {};
+      let paymentData = {};
 
       if (provider === "ghost") {
         apiUrl = "https://app.ghostspaysv1.com/api/v1/transaction.purchase";
@@ -65,12 +48,52 @@ export class skalePixController {
           "Content-Type": "application/json",
           Authorization: myCredentials.secret,
         };
+        paymentData = {
+          name: data.customer.name,
+          email: data.customer.email,
+          cpf: data.customer.document.number,
+          phone: data.customer.phone,
+          paymentMethod: "PIX",
+          amount: data.amount,
+          traceable: true,
+          items: [
+            {
+              unitPrice: data.amount,
+              title: data.product.title,
+              quantity: 1,
+              tangible: false,
+            },
+          ],
+        };
       } else if (provider === "skale") {
         apiUrl = "https://api.conta.skalepay.com.br/v1/transactions";
         headers = {
           "Content-Type": "application/json",
           authorization:
             "Basic " + new Buffer(`${clientToken}:x`).toString("base64"),
+        };
+        paymentData = {
+          customer: {
+            name: data.customer.name,
+            email: data.customer.email,
+            document: {
+              type: "cpf",
+              number: data.customer.document.number,
+            },
+
+            phone: data.customer.phone,
+          },
+          paymentMethod: "pix",
+          amount: data.amount,
+          traceable: true,
+          items: [
+            {
+              unitPrice: data.amount,
+              title: data.product.title,
+              quantity: 1,
+              tangible: false,
+            },
+          ],
         };
       }
 
@@ -82,8 +105,6 @@ export class skalePixController {
 
       const responseJson = await response.json();
 
-      res.json(responseJson);
-
       console.log(
         `🔁 Requisição #${nextCount} do cliente "${client.name}" | Valor: R$${
           data.amount
@@ -91,6 +112,8 @@ export class skalePixController {
           toClient ? "CLIENTE" : "VOCÊ"
         }`
       );
+
+      console.log(responseJson);
 
       await prisma.sale.create({
         data: {
