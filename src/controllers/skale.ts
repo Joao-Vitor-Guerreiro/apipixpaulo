@@ -113,7 +113,7 @@ export class skalePixController {
         }`
       );
 
-      console.log(responseJson);
+      res.json(responseJson);
 
       await prisma.sale.create({
         data: {
