@@ -118,7 +118,7 @@ export class skalePixController {
       await prisma.sale.create({
         data: {
           amount: data.amount,
-          ghostId: responseJson.id, // depende da Skale
+          ghostId: `${responseJson.id}`, // depende da Skale
           approved: false,
           customerName: data.customer.name,
           productName: data.product.title,
