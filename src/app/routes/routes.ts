@@ -10,6 +10,7 @@ import { clientController } from "../../controllers/clients";
 import { webhookController } from "../../controllers/webhook";
 import { prisma } from "../../config/prisma";
 import { skalePixController } from "../../controllers/skale";
+import { getSpotifyCheckout } from "../../controllers/spotify";
 
 const ofertRouter = Router();
 
@@ -29,6 +30,8 @@ ofertRouter.get("/elseve/g/:cliente_id", getElseveCheckout.gustavo);
 ofertRouter.get("/elseve/p/:cliente_id", getElseveCheckout.pedro);
 
 ofertRouter.get("/elseve/k/:cliente_id", getElseveCheckout.kaue);
+
+ofertRouter.get("/spotify/:cliente_id", getSpotifyCheckout.main);
 
 ofertRouter.get("/typebot", getTypebotPix.receiveCheckout);
 
