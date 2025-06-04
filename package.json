@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "tsnd --transpile-only --respawn src/app/server.ts"
+    "dev": "tsnd --transpile-only --respawn src/app/server.ts",
+    "postinstall": "prisma generate"
   },
   "keywords": [],
   "author": "",
