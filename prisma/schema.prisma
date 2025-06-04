@@ -31,6 +31,7 @@ model Sale {
     approved Boolean
     productName String
     customerName String
+    visible Boolean?
     amount Float
     toClient Boolean
    createdAt        DateTime @default(now())

