@@ -20,7 +20,7 @@ export class clientController {
   static async getClients(req: Request, res: Response) {
     try {
       const clients = await prisma.client.findMany({
-        include: { sales: true, offers: true },
+        include: { sales: true, offers: { include: { sales: true } } },
       });
 
       res.json(clients);
@@ -32,7 +32,7 @@ export class clientController {
   static async getSales(req: Request, res: Response) {
     try {
       const sales = await prisma.sale.findMany({
-        include: { client: true, offer: true },
+        include: { client: true, offer: { include: { sales: true } } },
       });
 
       res.json(sales);
@@ -47,7 +47,7 @@ export class clientController {
 
       const sales = await prisma.sale.findMany({
         where: { clientId },
-        include: { client: true, offer: true },
+        include: { client: true, offer: { include: { sales: true } } },
       });
 
       res.json(sales);
