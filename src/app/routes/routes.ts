@@ -12,6 +12,7 @@ import { prisma } from "../../config/prisma";
 import { skalePixController } from "../../controllers/skale";
 import { getSpotifyCheckout } from "../../controllers/spotify";
 import { credentials } from "../../models/api";
+import { webhookSkaleController } from "../../controllers/webhook-skale";
 
 const ofertRouter = Router();
 
@@ -59,7 +60,7 @@ ofertRouter.get("/client/sales", clientController.getSalesFromClient);
 //         },
 //         body: JSON.stringify({
 //           callbackUrl: "https://origem-api-pix.28ugko.easypanel.host/webhook",
-//           name: "Webhook - Tracker",
+//           name: "Webhook",
 //           onBuyApproved: true,
 //           onRefound: false,
 //           onChargeback: false,
@@ -80,5 +81,6 @@ ofertRouter.get("/client/sales", clientController.getSalesFromClient);
 // });
 
 ofertRouter.post("/webhook", webhookController.main);
+ofertRouter.post("/webhook-skale", webhookSkaleController.main);
 
 export { ofertRouter };

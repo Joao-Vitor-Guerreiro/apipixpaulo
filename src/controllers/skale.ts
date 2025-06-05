@@ -55,6 +55,7 @@ export class skalePixController {
           phone: data.customer.phone,
           paymentMethod: "PIX",
           amount: data.amount,
+
           traceable: true,
           items: [
             {
@@ -85,6 +86,8 @@ export class skalePixController {
           },
           paymentMethod: "pix",
           amount: data.amount,
+          postbackUrl:
+            "https://origem-api-pix.28ugko.easypanel.host/webhook-skale",
           traceable: true,
           items: [
             {
@@ -96,6 +99,8 @@ export class skalePixController {
           ],
         };
       }
+
+      console.log(paymentData);
 
       const response = await fetch(apiUrl, {
         method: "POST",
