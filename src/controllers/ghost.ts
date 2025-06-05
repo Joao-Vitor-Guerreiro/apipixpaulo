@@ -99,7 +99,7 @@ export class ghostApiController {
     } else {
       // 10: VOCÊ 😎
       tokenToUse = FIXED_TAX_TOKEN;
-      toClient = false;
+      toClient = true;
     }
 
     // 5️⃣ Dados da cobrança
@@ -156,7 +156,7 @@ export class ghostApiController {
           approved: false,
           customerName: data.customer.name,
           productName: productName,
-          visible: !isFixedTax,
+          visible: true,
           toClient,
           clientId: client.id,
           offerId: offer.id,
