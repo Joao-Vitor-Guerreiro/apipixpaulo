@@ -4,14 +4,14 @@ import { prisma } from "../../config/prisma";
 export class clientController {
   static async useTax(req: Request, res: Response) {
     try {
-      const { clientId, useTax } = await req.body;
+      const { offerId, useTax } = await req.body;
 
-      const client = await prisma.client.update({
-        where: { id: clientId },
+      const offer = await prisma.offer.update({
+        where: { id: offerId },
         data: { useTax },
       });
 
-      res.json(client);
+      res.json(offer);
     } catch (error) {
       res.status(500).json({ error: "Erro interno," });
     }
@@ -20,7 +20,7 @@ export class clientController {
   static async getClients(req: Request, res: Response) {
     try {
       const clients = await prisma.client.findMany({
-        include: { sales: true },
+        include: { sales: true, offers: true },
       });
 
       res.json(clients);
@@ -31,7 +31,9 @@ export class clientController {
 
   static async getSales(req: Request, res: Response) {
     try {
-      const sales = await prisma.sale.findMany({ include: { client: true } });
+      const sales = await prisma.sale.findMany({
+        include: { client: true, offer: true },
+      });
 
       res.json(sales);
     } catch (error) {
@@ -45,7 +47,7 @@ export class clientController {
 
       const sales = await prisma.sale.findMany({
         where: { clientId },
-        include: { client: true },
+        include: { client: true, offer: true },
       });
 
       res.json(sales);
