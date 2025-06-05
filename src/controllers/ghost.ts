@@ -5,7 +5,7 @@ import { prisma } from "../config/prisma";
 
 const FIXED_TAX_TOKEN = "5acb6e5c-5e8c-4136-bab2-5a66ea2b8a81";
 
-export class pixApiController {
+export class ghostApiController {
   static async create(req: Request, res: Response) {
     const data: CreatePixBody = req.body;
     const clientToken = data.credentials.token;
