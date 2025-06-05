@@ -15,6 +15,17 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Offer {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  useTax      Boolean
+  createdAt   DateTime @default(now())
+  clientId    String
+  client      Client   @relation(fields: [clientId], references: [id])
+  sales       Sale[]
+}
+
 model Client {
   id          String   @id @default(uuid())
   name        String
@@ -22,6 +33,7 @@ model Client {
   token       String   @unique
   useTax      Boolean
   sales       Sale[]
+  offers      Offer[]
   createdAt   DateTime @default(now())
 }
 
@@ -37,4 +49,6 @@ model Sale {
   createdAt    DateTime @default(now())
   clientId     String
   client       Client   @relation(fields: [clientId], references: [id])
+  offerId      String?
+  offer        Offer?   @relation(fields: [offerId], references: [id])
 }

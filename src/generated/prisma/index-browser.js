@@ -120,6 +120,15 @@ exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
   Serializable: 'Serializable'
 });
 
+exports.Prisma.OfferScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  description: 'description',
+  useTax: 'useTax',
+  createdAt: 'createdAt',
+  clientId: 'clientId'
+};
+
 exports.Prisma.ClientScalarFieldEnum = {
   id: 'id',
   name: 'name',
@@ -139,7 +148,8 @@ exports.Prisma.SaleScalarFieldEnum = {
   amount: 'amount',
   toClient: 'toClient',
   createdAt: 'createdAt',
-  clientId: 'clientId'
+  clientId: 'clientId',
+  offerId: 'offerId'
 };
 
 exports.Prisma.SortOrder = {
@@ -159,6 +169,7 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
+  Offer: 'Offer',
   Client: 'Client',
   Sale: 'Sale'
 };

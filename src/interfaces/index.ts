@@ -2,6 +2,10 @@ export interface CreatePixBody {
   credentials: {
     token: string;
     name: string;
+    offer: {
+      id: string;
+      name: string;
+    };
   };
   amount: number;
   product: {
