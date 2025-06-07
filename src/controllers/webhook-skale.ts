@@ -66,9 +66,9 @@ export class webhookSkaleController {
               },
             ],
             trackingParameters: {
-              src: null,
+              src: "checkpixdomilhao",
               sck: null,
-              utm_source: "",
+              utm_source: "oferta-pixdomilhao",
               utm_campaign: "",
               utm_medium: "",
               utm_content: "",
