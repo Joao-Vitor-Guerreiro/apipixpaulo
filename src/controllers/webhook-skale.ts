@@ -1,18 +1,29 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 
-function getCurrentDateTime() {
-  const now = new Date();
+async function getCurrentDateTimeFromAPI(timezone = "America/Sao_Paulo") {
+  try {
+    const response = await fetch(
+      `https://worldtimeapi.org/api/timezone/${timezone}`
+    );
+    const data = await response.json();
 
-  const year = now.getFullYear();
-  const month = String(now.getMonth() + 1).padStart(2, "0"); // meses começam do zero
-  const day = String(now.getDate()).padStart(2, "0");
+    // data.datetime vem no formato ISO: "2025-06-06T23:58:13.123456-03:00"
+    const date = new Date(data.datetime);
 
-  const hours = String(now.getHours()).padStart(2, "0");
-  const minutes = String(now.getMinutes()).padStart(2, "0");
-  const seconds = String(now.getSeconds()).padStart(2, "0");
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
 
-  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+    const seconds = String(date.getSeconds()).padStart(2, "0");
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  } catch (error) {
+    console.error("Erro ao buscar data da API:", error);
+    return null;
+  }
 }
 
 export class webhookSkaleController {
@@ -32,6 +43,8 @@ export class webhookSkaleController {
         data: { approved: data.status === "paid" },
       });
 
+      console.log(updatedSale);
+
       const utmResponse = await fetch(
         "https://api.utmify.com.br/api-credentials/orders",
         {
@@ -44,7 +57,7 @@ export class webhookSkaleController {
             platform: "Skale",
             paymentMethod: "pix",
             status: data.status,
-            createdAt: getCurrentDateTime(),
+            createdAt: await getCurrentDateTimeFromAPI(),
             approvedDate: null,
             refundedAt: null,
             customer: {
@@ -83,13 +96,13 @@ export class webhookSkaleController {
           }),
         }
       );
-
+      console.log(utmResponse);
       const utmResponseJson = await utmResponse.json();
       console.log("Resposta da UTMIFY ao WEBHOOK: ", utmResponseJson);
 
       res.status(200);
     } catch (error) {
-      res.status(500).json({ error: "Erro interno," });
+      res.status(500).json({ error: error });
     }
   }
 }
