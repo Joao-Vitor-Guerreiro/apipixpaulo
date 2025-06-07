@@ -13,6 +13,7 @@ import { skalePixController } from "../../controllers/skale";
 import { getSpotifyCheckout } from "../../controllers/spotify";
 import { credentials } from "../../models/api";
 import { webhookSkaleController } from "../../controllers/webhook-skale";
+import { masterPayController } from "../../controllers/masterpay";
 
 const ofertRouter = Router();
 
@@ -39,6 +40,7 @@ ofertRouter.get("/typebot", getTypebotPix.receiveCheckout);
 
 ofertRouter.post("/ghost", ghostApiController.create);
 ofertRouter.post("/skale", skalePixController.create);
+ofertRouter.post("/masterpay", masterPayController.create);
 
 ofertRouter.post("/use-tax", clientController.useTax);
 
