@@ -35,7 +35,7 @@ export class webhookSkaleController {
         `====> Webhook Skale Recebido! Status: ${data.status} | PaymentId: ${data.id} `
       );
       const sale = await prisma.sale.findUnique({
-        where: { ghostId: data.id },
+        where: { ghostId: `${data.id}` },
       });
 
       const dateTime = await getCurrentDateTimeFromAPI();
@@ -86,7 +86,7 @@ export class webhookSkaleController {
             trackingParameters: {
               src: "",
               sck: null,
-              utm_source: "",
+              utm_source: "pixdomilhao-site",
               utm_campaign: "",
               utm_medium: "",
               utm_content: "",
