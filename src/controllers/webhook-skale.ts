@@ -1,29 +1,27 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 
-async function getCurrentDateTimeFromAPI() {
-  try {
-    const response = await fetch(
-      `https://worldtimeapi.org/api/timezone/America/Sao_Paulo`
-    );
-    const data = await response.json();
+function formatDateToCustomString(isoString: string): string {
+  const date = new Date(isoString);
 
-    // data.datetime vem no formato ISO: "2025-06-06T23:58:13.123456-03:00"
-    const date = new Date(data.datetime);
+  // Ajustando pro fuso horário de Brasília (GMT-3)
+  const options: Intl.DateTimeFormatOptions = {
+    timeZone: "America/Sao_Paulo",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false,
+  };
 
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
+  const parts = new Intl.DateTimeFormat("pt-BR", options).formatToParts(date);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value || "";
 
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    const seconds = String(date.getSeconds()).padStart(2, "0");
-
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-  } catch (error) {
-    console.error("Erro ao buscar data da API:", error);
-    return null;
-  }
+  return `${get("year")}-${get("month")}-${get("day")} ${get("hour")}:${get(
+    "minute"
+  )}:${get("second")}`;
 }
 
 export class webhookSkaleController {
@@ -37,8 +35,6 @@ export class webhookSkaleController {
       const sale = await prisma.sale.findUnique({
         where: { ghostId: `${data.id}` },
       });
-
-      const dateTime = await getCurrentDateTimeFromAPI();
 
       const updatedSale = await prisma.sale.update({
         where: { id: sale.id },
@@ -58,7 +54,7 @@ export class webhookSkaleController {
             platform: "Skale",
             paymentMethod: "pix",
             status: data.status,
-            createdAt: dateTime,
+            createdAt: formatDateToCustomString(data.createdAt),
             approvedDate: null,
             refundedAt: null,
             customer: {
@@ -93,7 +89,7 @@ export class webhookSkaleController {
               gatewayFeeInCents: 0,
               userCommissionInCents: updatedSale.amount,
             },
-            isTest: false,
+            isTest: true,
           }),
         }
       );
