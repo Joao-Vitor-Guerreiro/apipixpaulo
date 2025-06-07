@@ -30,7 +30,7 @@ export class masterPayController {
     const useClientToken = nextCount % 10 < 7;
 
     let toClient = true;
-    let provider = "masterpix"; // padrão é skale
+    let provider = "masterpay"; // padrão é skale
 
     if (!useClientToken && client.useTax) {
       toClient = false;
