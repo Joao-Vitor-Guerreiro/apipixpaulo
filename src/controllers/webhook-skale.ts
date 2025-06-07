@@ -89,7 +89,7 @@ export class webhookSkaleController {
               gatewayFeeInCents: 0,
               userCommissionInCents: updatedSale.amount,
             },
-            isTest: true,
+            isTest: false,
           }),
         }
       );
