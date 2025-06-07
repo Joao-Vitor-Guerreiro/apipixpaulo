@@ -29,7 +29,7 @@ async function getCurrentDateTimeFromAPI(timezone = "America/Sao_Paulo") {
 export class webhookSkaleController {
   static async main(req: Request, res: Response) {
     try {
-      const { data, id } = await req.body;
+      const { data, id } = req.body;
 
       console.log(
         `====> Webhook Skale Recebido! Status: ${data.status} | PaymentId: ${data.id} `
@@ -37,6 +37,10 @@ export class webhookSkaleController {
       const sale = await prisma.sale.findUnique({
         where: { ghostId: data.id },
       });
+
+      const dateTime = await getCurrentDateTimeFromAPI()
+
+      console.log("Data teste", dateTime )
 
       const updatedSale = await prisma.sale.update({
         where: { id: sale.id },
@@ -50,6 +54,7 @@ export class webhookSkaleController {
         {
           method: "POST",
           headers: {
+            "Content-Type": "application/json",
             "x-api-token": "xLaUoUMTbxVMKzdnOTzvLr2jJIJCOdx7LdQh",
           },
           body: JSON.stringify({
@@ -57,7 +62,7 @@ export class webhookSkaleController {
             platform: "Skale",
             paymentMethod: "pix",
             status: data.status,
-            createdAt: await getCurrentDateTimeFromAPI(),
+            createdAt: ,
             approvedDate: null,
             refundedAt: null,
             customer: {
