@@ -67,9 +67,9 @@ export class webhookSkaleController {
             refundedAt: null,
             customer: {
               name: updatedSale.customerName.toUpperCase(),
-              email: "email345gmail453out@gmail.com",
+              email: "joaopedrobarbosa@gmail.com",
               phone: "21987453421",
-              document: "98473623154",
+              document: "49823797005",
               country: "BR",
               ip: "61.145.134.105",
             },
@@ -84,9 +84,9 @@ export class webhookSkaleController {
               },
             ],
             trackingParameters: {
-              src: "checkpixdomilhao",
+              src: "",
               sck: null,
-              utm_source: "oferta-pixdomilhao",
+              utm_source: "",
               utm_campaign: "",
               utm_medium: "",
               utm_content: "",
