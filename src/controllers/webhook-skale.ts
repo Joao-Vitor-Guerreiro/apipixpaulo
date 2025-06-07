@@ -40,14 +40,10 @@ export class webhookSkaleController {
 
       const dateTime = await getCurrentDateTimeFromAPI();
 
-      console.log("Data teste", dateTime);
-
       const updatedSale = await prisma.sale.update({
         where: { id: sale.id },
         data: { approved: data.status === "paid" },
       });
-
-      console.log(updatedSale);
 
       const utmResponse = await fetch(
         "https://api.utmify.com.br/api-credentials/orders",
@@ -101,7 +97,7 @@ export class webhookSkaleController {
           }),
         }
       );
-      console.log(utmResponse);
+
       const utmResponseJson = await utmResponse.json();
       console.log("Resposta da UTMIFY ao WEBHOOK: ", utmResponseJson);
 
