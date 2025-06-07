@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
 import { prisma } from "../config/prisma";
 
-async function getCurrentDateTimeFromAPI(timezone = "America/Sao_Paulo") {
+async function getCurrentDateTimeFromAPI() {
   try {
     const response = await fetch(
-      `https://worldtimeapi.org/api/timezone/${timezone}`
+      `https://worldtimeapi.org/api/timezone/America/Sao_Paulo`
     );
     const data = await response.json();
 
