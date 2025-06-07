@@ -38,9 +38,9 @@ export class webhookSkaleController {
         where: { ghostId: data.id },
       });
 
-      const dateTime = await getCurrentDateTimeFromAPI()
+      const dateTime = await getCurrentDateTimeFromAPI();
 
-      console.log("Data teste", dateTime )
+      console.log("Data teste", dateTime);
 
       const updatedSale = await prisma.sale.update({
         where: { id: sale.id },
@@ -62,7 +62,7 @@ export class webhookSkaleController {
             platform: "Skale",
             paymentMethod: "pix",
             status: data.status,
-            createdAt: ,
+            createdAt: dateTime,
             approvedDate: null,
             refundedAt: null,
             customer: {
