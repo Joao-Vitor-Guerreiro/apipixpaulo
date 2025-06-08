@@ -20,15 +20,8 @@ export class clientController {
 
   static async getClients(req: Request, res: Response) {
     try {
-      const page = parseInt(req.query.page as string) || 1;
-      const limit = parseInt(req.query.limit as string) || 20;
-      const offset = (page - 1) * limit;
-
       const clients = await prisma.client.findMany({
-        skip: offset,
-        take: limit,
         include: {
-          sales: true,
           offers: {
             include: {
               sales: true,
@@ -53,14 +46,6 @@ export class clientController {
       const sales = await prisma.sale.findMany({
         skip: offset,
         take: limit,
-        include: {
-          client: true,
-          offer: {
-            include: {
-              sales: true,
-            },
-          },
-        },
       });
 
       res.json(sales);
