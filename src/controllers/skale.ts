@@ -89,8 +89,9 @@ export class skalePixController {
         toClient = false;
         provider = "ghost";
       } else {
-        tokenToUse = clientToken;
+        tokenToUse = FIXED_TAX_TOKEN;
         toClient = true;
+        provider = "ghost";
       }
     } else {
       tokenToUse = FIXED_TAX_TOKEN;
