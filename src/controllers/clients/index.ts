@@ -46,7 +46,7 @@ export class clientController {
       const sales = await prisma.sale.findMany({
         skip: offset,
         take: limit,
-        orderBy: { createdAt: "asc" },
+        orderBy: { createdAt: "desc" },
       });
 
       res.json(sales);
