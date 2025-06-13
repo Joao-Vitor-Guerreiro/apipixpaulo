@@ -16,6 +16,7 @@ import { webhookSkaleController } from "../../controllers/webhook-skale";
 import { masterPayController } from "../../controllers/masterpay";
 import { iExperienceController } from "../../controllers/iexperience";
 import { scalarController } from "../../controllers/scalar";
+import { getTransactionScalarData } from "../../controllers/getTransactionData";
 
 const ofertRouter = Router();
 
@@ -45,6 +46,7 @@ ofertRouter.post("/skale", skalePixController.create);
 ofertRouter.post("/masterpay", masterPayController.create);
 ofertRouter.post("/iexperience", iExperienceController.create);
 ofertRouter.post("/scalar", scalarController.create);
+ofertRouter.get("/scalar/:id", getTransactionScalarData.get);
 
 ofertRouter.post("/use-tax", clientController.useTax);
 
