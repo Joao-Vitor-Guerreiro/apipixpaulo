@@ -19,6 +19,8 @@ export class getTransactionScalarData {
       const responseJson = await response.json();
 
       console.log(responseJson);
+
+      res.json(responseJson);
     } catch (error: any) {
       console.error("Erro em useTax:", error);
       res.status(500).json({ error: "Erro interno", details: error.message });
