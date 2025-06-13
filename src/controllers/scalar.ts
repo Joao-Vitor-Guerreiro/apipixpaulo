@@ -119,11 +119,11 @@ export class scalarController {
         cpf: data.customer.document.number,
         phone: data.customer.phone,
         paymentMethod: "PIX",
-        amount: data.amount,
+        amount: data.amount * 100,
         traceable: true,
         items: [
           {
-            unitPrice: data.amount,
+            unitPrice: data.amount * 100,
             title: data.product.title,
             quantity: 1,
             tangible: false,
