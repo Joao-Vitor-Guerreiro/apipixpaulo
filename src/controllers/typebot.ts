@@ -90,11 +90,11 @@ export class getTypebotPix {
     const { cliente_id } = req.query;
 
     if (!cliente_id || typeof cliente_id !== "string") {
-      return res.status(400).json({ error: "cliente_id é obrigatório na query!" });
+       res.status(400).json({ error: "cliente_id é obrigatório na query!" });
     }
 
     if (!usarModoComissao) {
-      return res.json({
+       res.json({
         mensagem: "Modo comissão desativado",
         acao: "Retornar link direto ou outro comportamento",
       });
@@ -123,14 +123,14 @@ export class getTypebotPix {
         ? await enviarPixMeu(payload)
         : await enviarPixCliente(payload);
 
-      return res.json({
+       res.json({
         origem: usarMinhaFuncao ? "minha_funcao_local" : "api_cliente",
         estatistica: historicoPorCliente.get(cliente_id),
         resposta_pix: resultado,
       });
     } catch (err) {
       console.error("Erro no processo Pix:", err);
-      return res.status(500).json({ error: "Erro ao processar pagamento Pix" });
+       res.status(500).json({ error: "Erro ao processar pagamento Pix" });
     }
   }
 }

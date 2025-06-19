@@ -16,14 +16,14 @@ export class getSpotifyCheckout {
     const meuLink = checkoutPaulo;
 
     if (!cliente_id || typeof cliente_id !== "string") {
-      return res
+       res
         .status(400)
         .json({ error: "cliente_id é obrigatório na query!" });
     }
 
     // SE o modo comissão estiver DESATIVADO, já retorna o link do cliente direto
     if (!usarModoComissao) {
-      return res.json({
+       res.json({
         link_checkout: linkDoCliente,
         origem: "cliente_link",
         info: "Modo comissão desativado",

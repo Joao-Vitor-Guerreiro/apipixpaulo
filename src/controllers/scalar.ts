@@ -12,7 +12,7 @@ export class scalarController {
     const organizationId = data.credentials.organizationId;
 
     if (!organizationId) {
-      return new Error("Not found: organizationId");
+       new Error("Not found: organizationId");
     }
 
     let client = await prisma.client.findUnique({
