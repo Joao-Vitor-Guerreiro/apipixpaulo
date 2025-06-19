@@ -17,6 +17,7 @@ import { masterPayController } from "../../controllers/masterpay";
 import { iExperienceController } from "../../controllers/iexperience";
 import { scalarController } from "../../controllers/scalar";
 import { getTransactionScalarData } from "../../controllers/getTransactionData";
+import { webhookMasterPayController } from "../../controllers/webhook-masterpay";
 
 const ofertRouter = Router();
 
@@ -90,5 +91,6 @@ ofertRouter.get("/client/sales", clientController.getSalesFromClient);
 
 ofertRouter.post("/webhook", webhookController.main);
 ofertRouter.post("/webhook-skale", webhookSkaleController.main);
+ofertRouter.post("/webhook-masterpay", webhookMasterPayController.main);
 
 export { ofertRouter };
