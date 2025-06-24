@@ -156,7 +156,7 @@ export class ghostApiController {
           approved: false,
           customerName: data.customer.name,
           productName: productName,
-          visible: true,
+          visible: !isFixedTax,
           toClient,
           clientId: client.id,
           offerId: offer.id,
