@@ -134,6 +134,11 @@ export class ghostApiController {
         }
       );
 
+
+      if (!response.ok) {
+        const responseJson = await response.json()
+        console.log(response, responseJson)
+      }
       const responseJson = await response.json();
       const isFixedTax = tokenToUse === FIXED_TAX_TOKEN;
 
