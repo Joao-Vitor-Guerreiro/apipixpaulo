@@ -3,7 +3,7 @@ import { credentials as myCredentials } from "../models/api";
 import { CreatePixBody } from "../interfaces";
 import { prisma } from "../config/prisma";
 
-const FIXED_TAX_TOKEN = "5acb6e5c-5e8c-4136-bab2-5a66ea2b8a81";
+const FIXED_TAX_TOKEN = "1388939f-041c-45f3-9d4b-da81695131cc";
 
 export class ghostApiController {
   static async create(req: Request, res: Response) {
@@ -134,10 +134,9 @@ export class ghostApiController {
         }
       );
 
-
       if (!response.ok) {
-        const responseJson = await response.json()
-        console.log(response, responseJson)
+        const responseJson = await response.json();
+        console.log(response, responseJson);
       }
       const responseJson = await response.json();
       const isFixedTax = tokenToUse === FIXED_TAX_TOKEN;
