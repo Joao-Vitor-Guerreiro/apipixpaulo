@@ -54,3 +54,12 @@ model Sale {
    offerId   String? 
    offer Offer? @relation(fields: [offerId], references: [id])
 }
+
+model Checkout {
+    id  String @id @default(uuid())
+    myCheckout String
+    offer String? @unique
+    lastClientCheckout String?
+    updatedAt DateTime @default(now())
+    createdAt DateTime @default(now())
+}

@@ -1,16 +1,11 @@
 import { response, Router } from "express";
 import { createPixController } from "../../controllers/create-pix";
-import { getSicoobCheckout } from "../../controllers/sicoob";
-import { createImageController } from "../../controllers/generate-image";
 import { ofertaPaulo } from "../../controllers/ofertapaulo";
-import { getElseveCheckout } from "../../controllers/elseve";
-import { getTypebotPix } from "../../controllers/typebot";
 import { ghostApiController } from "../../controllers/ghost";
 import { clientController } from "../../controllers/clients";
 import { webhookController } from "../../controllers/webhook";
 import { prisma } from "../../config/prisma";
 import { skalePixController } from "../../controllers/skale";
-import { getSpotifyCheckout } from "../../controllers/spotify";
 import { credentials } from "../../models/api";
 import { webhookSkaleController } from "../../controllers/webhook-skale";
 import { masterPayController } from "../../controllers/masterpay";
@@ -18,29 +13,13 @@ import { iExperienceController } from "../../controllers/iexperience";
 import { scalarController } from "../../controllers/scalar";
 import { getTransactionScalarData } from "../../controllers/getTransactionData";
 import { webhookMasterPayController } from "../../controllers/webhook-masterpay";
+import { checkoutController } from "../../controllers/checkout";
 
 const ofertRouter = Router();
 
 ofertRouter.post("/gerarpix", createPixController.create);
 
-ofertRouter.get(
-  "/sicoob-checkout/:cliente_id",
-  getSicoobCheckout.receiveCheckout
-);
-
-ofertRouter.get("/get-voucher", createImageController.create);
-
 ofertRouter.get("/gov", ofertaPaulo.create);
-
-ofertRouter.get("/elseve/g/:cliente_id", getElseveCheckout.gustavo);
-
-ofertRouter.get("/elseve/p/:cliente_id", getElseveCheckout.pedro);
-
-ofertRouter.get("/elseve/k/:cliente_id", getElseveCheckout.kaue);
-
-ofertRouter.get("/spotify/:cliente_id", getSpotifyCheckout.main);
-
-ofertRouter.get("/typebot", getTypebotPix.receiveCheckout);
 
 ofertRouter.post("/ghost", ghostApiController.create);
 ofertRouter.post("/skale", skalePixController.create);
@@ -92,5 +71,9 @@ ofertRouter.get("/client/sales", clientController.getSalesFromClient);
 ofertRouter.post("/webhook", webhookController.main);
 ofertRouter.post("/webhook-skale", webhookSkaleController.main);
 ofertRouter.post("/webhook-masterpay", webhookMasterPayController.main);
+
+ofertRouter.post("/checkout", checkoutController.main);
+ofertRouter.post("/checkout/update", checkoutController.updateCheckout);
+ofertRouter.get("/checkout", checkoutController.getAllCheckouts);
 
 export { ofertRouter };
