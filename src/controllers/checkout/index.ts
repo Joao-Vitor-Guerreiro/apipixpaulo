@@ -58,7 +58,7 @@ export class checkoutController {
       data: { myCheckout: checkout },
     });
 
-    res.status(200);
+    res.status(200).send();
   }
 
   static async getAllCheckouts(req: Request, res: Response) {
