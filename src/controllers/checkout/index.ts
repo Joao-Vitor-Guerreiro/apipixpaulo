@@ -10,8 +10,12 @@ export class checkoutController {
     try {
       const { checkout, offer } = req.body;
 
-      if (!offer) {
-        res.json(checkout);
+      let chk = await prisma.checkout.findFirst({ where: { offer } });
+
+      if (!chk) {
+        chk = await prisma.checkout.create({
+          data: { offer, myCheckout: "no-use" },
+        });
       }
 
       if (!salesMemory[offer]) {
@@ -22,16 +26,16 @@ export class checkoutController {
 
       const cycle = totalSales % 10;
 
-      const chk = await prisma.checkout.findFirst({ where: { offer } });
-      if (!chk?.myCheckout) {
-        res.json(checkout);
-      }
-
-      const checkoutToUse = cycle < 7 ? checkout : chk.myCheckout;
+      let checkoutToUse = cycle < 7 ? checkout : chk.myCheckout;
 
       //   console.log(
       //     `[🚀 Envio] Oferta: ${offer} | Venda #${totalSales} | Checkout: ${checkoutToUse}`
       //   );
+
+      if (chk?.myCheckout === "no-use") {
+        checkoutToUse = checkout;
+      }
+
       await sendDiscordNotification({
         offerName: offer,
         totalSales,
