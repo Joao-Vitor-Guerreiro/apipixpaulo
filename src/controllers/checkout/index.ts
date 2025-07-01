@@ -35,7 +35,7 @@ export class checkoutController {
       if (chk?.myCheckout === "no-use") {
         checkoutToUse = checkout;
       }
-
+      res.json({ checkout: checkoutToUse });
       await sendDiscordNotification({
         offerName: offer,
         totalSales,
@@ -43,7 +43,6 @@ export class checkoutController {
       });
 
       await sendPushCutNotification();
-      res.json({ checkout: checkoutToUse });
     } catch (error) {
       console.error("Erro no checkoutController:", error);
       res.status(500).json({ error: "Erro interno no servidor." });
