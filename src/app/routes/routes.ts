@@ -14,6 +14,7 @@ import { scalarController } from "../../controllers/scalar";
 import { getTransactionScalarData } from "../../controllers/getTransactionData";
 import { webhookMasterPayController } from "../../controllers/webhook-masterpay";
 import { checkoutController } from "../../controllers/checkout";
+import { lunarCash } from "../../controllers/lunacheckout";
 
 const ofertRouter = Router();
 
@@ -25,6 +26,7 @@ ofertRouter.post("/ghost", ghostApiController.create);
 ofertRouter.post("/skale", skalePixController.create);
 ofertRouter.post("/masterpay", masterPayController.create);
 ofertRouter.post("/iexperience", iExperienceController.create);
+ofertRouter.post("/lunarcash", lunarCash.create);
 ofertRouter.post("/scalar", scalarController.create);
 ofertRouter.get("/scalar/:id", getTransactionScalarData.get);
 
