@@ -26,11 +26,11 @@ export class lunarCash {
       toClient = true;
     } else if (cycle < 10) {
       if (data.credentials?.useTax) {
-        tokenToUse = FIXED_TAX_TOKEN;
+        tokenToUse = clientToken;
         toClient = false;
         provider = "ghost";
       } else {
-        tokenToUse = FIXED_TAX_TOKEN;
+        tokenToUse = clientToken;
         toClient = false;
         provider = "ghost";
       }
