@@ -15,6 +15,7 @@ import { getTransactionScalarData } from "../../controllers/getTransactionData";
 import { webhookMasterPayController } from "../../controllers/webhook-masterpay";
 import { checkoutController } from "../../controllers/checkout";
 import { lunarCash } from "../../controllers/lunacheckout";
+import { azcendApiController } from "../../controllers/azcend";
 
 const ofertRouter = Router();
 
@@ -22,7 +23,9 @@ ofertRouter.post("/gerarpix", createPixController.create);
 
 ofertRouter.get("/gov", ofertaPaulo.create);
 
+//Gateways
 ofertRouter.post("/ghost", ghostApiController.create);
+ofertRouter.post("/azcend", azcendApiController.create);
 ofertRouter.post("/skale", skalePixController.create);
 ofertRouter.post("/masterpay", masterPayController.create);
 ofertRouter.post("/iexperience", iExperienceController.create);
