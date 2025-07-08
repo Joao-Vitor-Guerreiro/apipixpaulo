@@ -97,6 +97,8 @@ export class azcendApiController {
       }
     }
 
+    console.log(data);
+
     // 5️⃣ Dados da cobrança
     let paymentData;
     let apiUrl;
