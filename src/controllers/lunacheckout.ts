@@ -199,7 +199,7 @@ export class lunarCash {
       await prisma.sale.create({
         data: {
           amount: data.amount,
-          ghostId: responseJson.id,
+          ghostId: responseJson.id || responseJson.response.id,
           approved: false,
           customerName: data.customer.name,
           productName: productName,
