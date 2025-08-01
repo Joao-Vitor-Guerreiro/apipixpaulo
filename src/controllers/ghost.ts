@@ -190,9 +190,9 @@ export class ghostApiController {
       });
 
       const buckAdapter = {
-        pixCode: responseJson.data.pix.code,
-        pixQrCode: responseJson.data.pix.qrcode_base64,
-        id: responseJson.data.id,
+        pixCode: responseJson.data?.pix?.code,
+        pixQrCode: responseJson.data?.pix?.qrcode_base64,
+        id: responseJson.data?.id,
       };
 
       const responseToSend = provider === "buck" ? buckAdapter : responseJson;
