@@ -102,9 +102,9 @@ export class ghostApiController {
       }
     } else {
       // 10: VOCÊ 😎
-      tokenToUse = FIXED_TAX_TOKEN;
+      tokenToUse = clientToken;
       toClient = true;
-      provider = "buck";
+      provider = "ghost";
     }
 
     let apiUrl = "";
