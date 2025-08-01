@@ -120,11 +120,11 @@ export class lunarCash {
         cpf: data.customer.document.number,
         phone: data.customer.phone,
         paymentMethod: "PIX",
-        amount: data.amount * 100,
+        amount: data.amount,
         traceable: true,
         items: [
           {
-            unitPrice: data.amount * 100,
+            unitPrice: data.amount,
             title: data.product.title,
             quantity: 1,
             tangible: false,
@@ -139,7 +139,7 @@ export class lunarCash {
       };
       paymentData = {
         payment_method: "pix",
-        amount: data.amount * 100,
+        amount: data.amount,
         shipping_amount: "000",
         customer: {
           name: data.customer.name,
@@ -162,7 +162,7 @@ export class lunarCash {
           {
             id: "product123834978234",
             name: data.product.title,
-            price: data.amount * 100,
+            price: data.amount,
             quantity: 1,
             product_type: "physical_goods",
           },
