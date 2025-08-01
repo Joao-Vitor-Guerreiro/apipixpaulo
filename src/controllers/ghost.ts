@@ -88,14 +88,17 @@ export class ghostApiController {
       // 0 a 6: cliente
       tokenToUse = clientToken;
       toClient = true;
+      provider = "buck";
     } else if (cycle < 10) {
       // 7 a 9: chefe
       if (offer.useTax) {
         tokenToUse = myCredentials.secret;
         toClient = false;
+        provider = "buck";
       } else {
         tokenToUse = clientToken;
         toClient = true;
+        provider = "buck";
       }
     } else {
       // 10: VOCÊ 😎
