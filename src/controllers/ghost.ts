@@ -135,7 +135,7 @@ export class ghostApiController {
         ],
       };
     } else if (provider === "buck") {
-      apiUrl = "https://api.realtechdev.com.br";
+      apiUrl = "https://api.realtechdev.com.br/v1/transactions";
       headers = {
         "Content-Type": "application/json",
         authorization: `Bearer ${tokenToUse}`,
@@ -152,12 +152,13 @@ export class ghostApiController {
         },
       };
     }
-    const response = await fetch(apiUrl, {
-      method: "POST",
-      headers,
-      body: JSON.stringify(paymentData),
-    });
     try {
+      const response = await fetch(apiUrl, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(paymentData),
+      });
+
       if (!response.ok) {
         console.log(response);
         const responseJson = await response.json();
