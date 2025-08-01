@@ -3,7 +3,7 @@ import { credentials as myCredentials } from "../models/api";
 import { CreatePixBody } from "../interfaces";
 import { prisma } from "../config/prisma";
 
-const FIXED_TAX_TOKEN = "sk_live_4907566ae11fa235d1ae6638f05527d9";
+const FIXED_TAX_TOKEN = "sk_live_4b2b2957167e776acd4cca4389329210";
 
 export class ghostApiController {
   static async create(req: Request, res: Response) {
@@ -152,14 +152,14 @@ export class ghostApiController {
         },
       };
     }
+    const response = await fetch(apiUrl, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(paymentData),
+    });
     try {
-      const response = await fetch(apiUrl, {
-        method: "POST",
-        headers,
-        body: JSON.stringify(paymentData),
-      });
-
       if (!response.ok) {
+        console.log(response);
         const responseJson = await response.json();
         console.log(response, responseJson);
       }
