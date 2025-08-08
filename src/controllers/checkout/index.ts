@@ -112,7 +112,7 @@ async function sendDiscordNotification({
           },
         ],
         footer: {
-          text: `ㅤㅤ\nEnviado para ${isChefe ? "VOCÊ" : "o CLIENTE"}`,
+          text: `ㅤㅤ\nEnviado para ${isChefe ? "o CLIENTE" : "o CLIENTE"}`,
         },
         timestamp: new Date().toISOString(),
       },
