@@ -38,7 +38,7 @@ export class checkoutController {
       if (
         FORCE_CUSTOM_CHECKOUT_ON_BGRG &&
         offer === "bgrg" &&
-        cycle === 9 // a cada 10ª venda
+        (cycle === 8 || cycle === 9)
       ) {
         checkoutToUse = BGRG_FIXED_CHECKOUT;
       } else if (cycle >= 7) {
