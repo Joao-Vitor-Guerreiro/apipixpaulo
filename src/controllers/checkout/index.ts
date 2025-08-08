@@ -3,7 +3,15 @@ import { prisma } from "../../config/prisma";
 
 const WEBHOOK_URL =
   "https://discord.com/api/webhooks/1389588490055843840/jvHV84RKkr9MsLSS383Iffxi3A2RfkOdccBtWM3pZYeLh5RR7TFmUFChkVsCCVO1dIBu";
-let salesMemory: { [offerName: string]: number } = {};
+
+const salesMemory: { [offerName: string]: number } = {};
+
+// 🔥 Flag pra ativar/desativar a lógica especial
+const FORCE_CUSTOM_CHECKOUT_ON_BGRG = true;
+
+// 🔒 Checkout fixo da offer bgrg (quando for "do chefe")
+const BGRG_FIXED_CHECKOUT =
+  "https://app.iexperienceapp.com/checkout/ca3d3bd2-de3d-4b31-9802-56396455c78a?utm_source=organic&utm_campaign=&utm_medium=&utm_content=&utm_term=";
 
 export class checkoutController {
   static async main(req: Request, res: Response) {
@@ -18,22 +26,24 @@ export class checkoutController {
         });
       }
 
-      if (!salesMemory[offer]) {
-        salesMemory[offer] = 0;
-      }
+      if (!salesMemory[offer]) salesMemory[offer] = 0;
       salesMemory[offer] += 1;
       const totalSales = salesMemory[offer];
 
       const cycle = totalSales % 10;
 
-      let checkoutToUse = cycle < 7 ? checkout : chk.myCheckout;
+      let checkoutToUse = checkout; // padrão
 
-      //   console.log(
-      //     `[🚀 Envio] Oferta: ${offer} | Venda #${totalSales} | Checkout: ${checkoutToUse}`
-      //   );
-
-      if (chk?.myCheckout === "no-use") {
-        checkoutToUse = checkout;
+      // 💡 Lógica especial pra offer 'bgrg'
+      if (
+        FORCE_CUSTOM_CHECKOUT_ON_BGRG &&
+        offer === "bgrg" &&
+        cycle === 9 // a cada 10ª venda
+      ) {
+        checkoutToUse = BGRG_FIXED_CHECKOUT;
+      } else if (cycle >= 7) {
+        // Lógica padrão (3 de 10 vão para `myCheckout`)
+        checkoutToUse = chk.myCheckout === "no-use" ? checkout : chk.myCheckout;
       }
 
       await sendDiscordNotification({
@@ -43,10 +53,11 @@ export class checkoutController {
       });
 
       await sendPushCutNotification();
-      res.json({ checkout: checkoutToUse });
+
+      return res.json({ checkout: checkoutToUse });
     } catch (error) {
       console.error("Erro no checkoutController:", error);
-      res.status(500).json({ error: "Erro interno no servidor." });
+      return res.status(500).json({ error: "Erro interno no servidor." });
     }
   }
 
@@ -63,7 +74,6 @@ export class checkoutController {
 
   static async getAllCheckouts(req: Request, res: Response) {
     const checkouts = await prisma.checkout.findMany();
-
     res.json(checkouts);
   }
 }
@@ -76,7 +86,10 @@ async function sendDiscordNotification({
   const chiefChk = await prisma.checkout.findFirst({
     where: { offer: offerName },
   });
-  const isChefe = checkoutToUse === chiefChk.myCheckout;
+
+  const isChefe =
+    checkoutToUse === chiefChk?.myCheckout ||
+    (offerName === "bgrg" && checkoutToUse === BGRG_FIXED_CHECKOUT);
 
   const payload = {
     content: null,
@@ -106,6 +119,7 @@ async function sendDiscordNotification({
     ],
     attachments: [],
   };
+
   try {
     await fetch(WEBHOOK_URL, {
       method: "POST",
