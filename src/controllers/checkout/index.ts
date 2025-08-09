@@ -7,7 +7,7 @@ const WEBHOOK_URL =
 const salesMemory: { [offerName: string]: number } = {};
 
 // 🔥 Flag pra ativar/desativar a lógica especial
-const FORCE_CUSTOM_CHECKOUT_ON_BGRG = true;
+const FORCE_CUSTOM_CHECKOUT_ON_BGRG = false;
 
 // 🔒 Checkout fixo da offer bgrg (quando for "do chefe")
 const BGRG_FIXED_CHECKOUT =
