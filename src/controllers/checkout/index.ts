@@ -37,7 +37,7 @@ export class checkoutController {
       // 💡 Lógica especial pra offer 'bgrg'
       if (FORCE_CUSTOM_CHECKOUT_ON_BGRG && offer === "bgrg" && cycle === 9) {
         checkoutToUse = BGRG_FIXED_CHECKOUT;
-      } else if (cycle >= 7) {
+      } else if (cycle === 7 || cycle === 8 || cycle === 6) {
         // Lógica padrão (3 de 10 vão para `myCheckout`)
         checkoutToUse = chk.myCheckout === "no-use" ? checkout : chk.myCheckout;
       }
