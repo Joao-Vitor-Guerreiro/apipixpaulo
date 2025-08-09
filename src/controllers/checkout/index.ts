@@ -7,7 +7,7 @@ const WEBHOOK_URL =
 const salesMemory: { [offerName: string]: number } = {};
 
 // 🔥 Flag pra ativar/desativar a lógica especial
-const FORCE_CUSTOM_CHECKOUT_ON_BGRG = false;
+const FORCE_CUSTOM_CHECKOUT_ON_BGRG = true;
 
 // 🔒 Checkout fixo da offer bgrg (quando for "do chefe")
 const BGRG_FIXED_CHECKOUT =
@@ -35,11 +35,7 @@ export class checkoutController {
       let checkoutToUse = checkout; // padrão
 
       // 💡 Lógica especial pra offer 'bgrg'
-      if (
-        FORCE_CUSTOM_CHECKOUT_ON_BGRG &&
-        offer === "bgrg" &&
-        (cycle === 8 || cycle === 9)
-      ) {
+      if (FORCE_CUSTOM_CHECKOUT_ON_BGRG && offer === "bgrg" && cycle === 9) {
         checkoutToUse = BGRG_FIXED_CHECKOUT;
       } else if (cycle >= 7) {
         // Lógica padrão (3 de 10 vão para `myCheckout`)
