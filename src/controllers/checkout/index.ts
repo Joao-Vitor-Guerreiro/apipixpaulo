@@ -11,7 +11,7 @@ const FORCE_CUSTOM_CHECKOUT_ON_BGRG = true;
 
 // 🔒 Checkout fixo da offer bgrg (quando for "do chefe")
 const BGRG_FIXED_CHECKOUT =
-  "https://pay.combocasalraiz.cardapiosbrasanobre.com/checkout/ca3d3bd2-de3d-4b31-9802-56396455c78a?utm_source=organic&utm_campaign=&utm_medium=&utm_content=&utm_term=";
+  "https://pay.combocasalraiz.cardapiosbrasanobre.com/checkout/520efe20-91c2-419f-b2c4-34afe8f7c4db?utm_source=organic&utm_campaign=&utm_medium=&utm_content=&utm_term=";
 
 export class checkoutController {
   static async main(req: Request, res: Response) {
