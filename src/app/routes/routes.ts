@@ -81,4 +81,14 @@ ofertRouter.post("/checkout", checkoutController.main);
 ofertRouter.post("/checkout/update", checkoutController.updateCheckout);
 ofertRouter.get("/checkout", checkoutController.getAllCheckouts);
 
+ofertRouter.post("/webhook-teste", async (req, res) => {
+  const { body } = req;
+
+  console.log(body);
+
+  res.json({
+    message: "Webhook recebido com sucesso",
+  });
+});
+
 export { ofertRouter };
