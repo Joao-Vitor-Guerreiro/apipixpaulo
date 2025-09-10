@@ -1,21 +1,21 @@
 import { response, Router } from "express";
 import { createPixController } from "../../controllers/create-pix";
 import { ofertaPaulo } from "../../controllers/ofertapaulo";
-import { ghostApiController } from "../../controllers/ghost";
+
 import { clientController } from "../../controllers/clients";
 import { webhookController } from "../../controllers/webhook";
 import { prisma } from "../../config/prisma";
-import { skalePixController } from "../../controllers/skale";
+
 import { credentials } from "../../models/api";
 import { webhookSkaleController } from "../../controllers/webhook-skale";
-import { masterPayController } from "../../controllers/masterpay";
+
 import { iExperienceController } from "../../controllers/iexperience";
-import { scalarController } from "../../controllers/scalar";
+
 import { getTransactionScalarData } from "../../controllers/getTransactionData";
 import { webhookMasterPayController } from "../../controllers/webhook-masterpay";
 import { checkoutController } from "../../controllers/checkout";
 import { lunarCash } from "../../controllers/lunacheckout";
-import { azcendApiController } from "../../controllers/azcend";
+
 
 const ofertRouter = Router();
 
@@ -25,13 +25,13 @@ ofertRouter.get("/gov", ofertaPaulo.create);
 
 //Gateways
 ofertRouter.post("/ghost", ghostApiController.create);
-ofertRouter.post("/azcend", azcendApiController.create);
-ofertRouter.post("/skale", skalePixController.create);
-ofertRouter.post("/masterpay", masterPayController.create);
+
+
+
 ofertRouter.post("/iexperience", iExperienceController.create);
 ofertRouter.post("/lunarcash", lunarCash.create);
-ofertRouter.post("/scalar", scalarController.create);
-ofertRouter.get("/scalar/:id", getTransactionScalarData.get);
+
+
 
 ofertRouter.post("/use-tax", clientController.useTax);
 
