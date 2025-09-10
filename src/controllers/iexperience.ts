@@ -3,7 +3,6 @@ import { credentials as myCredentials } from "../models/api";
 import { CreatePixBody } from "../interfaces";
 import { prisma } from "../config/prisma";
 
-const FIXED_TAX_TOKEN = "5acb6e5c-5e8c-4136-bab2-5a66ea2b8a81";
 
 export class iExperienceController {
   static async create(req: Request, res: Response) {
@@ -92,11 +91,7 @@ export class iExperienceController {
         tokenToUse = clientToken;
         toClient = true;
       }
-    } else {
-      tokenToUse = FIXED_TAX_TOKEN;
-      toClient = true;
-      provider = "ghost";
-    }
+    } 
 
     let apiUrl = "";
     let headers = {};
@@ -181,9 +176,8 @@ export class iExperienceController {
         } | API usada: ${provider.toUpperCase()} | Enviado para: ${
           tokenToUse === clientToken
             ? "CLIENTE"
-            : tokenToUse === myCredentials.secret
-            ? "VOCÊ (MYCREDENTIALS)"
-            : "TAXA FIXA (TOKEN EXTRA)"
+            : "VOCÊ (MYCREDENTIALS)"
+          
         }`
       );
 
