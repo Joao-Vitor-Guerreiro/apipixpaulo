@@ -24,7 +24,7 @@ ofertRouter.post("/gerarpix", createPixController.create);
 ofertRouter.get("/gov", ofertaPaulo.create);
 
 //Gateways
-ofertRouter.post("/ghost", ghostApiController.create);
+
 
 
 
