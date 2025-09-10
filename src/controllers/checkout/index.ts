@@ -6,12 +6,6 @@ const WEBHOOK_URL =
 
 const salesMemory: { [offerName: string]: number } = {};
 
-// 🔥 Flag pra ativar/desativar a lógica especial
-const FORCE_CUSTOM_CHECKOUT_ON_BGRG = true;
-
-// 🔒 Checkout fixo da offer bgrg (quando for "do chefe")
-const BGRG_FIXED_CHECKOUT =
-  "https://pay.combocasalraiz.cardapiosbrasanobre.com/checkout/520efe20-91c2-419f-b2c4-34afe8f7c4db?utm_source=organic&utm_campaign=&utm_medium=&utm_content=&utm_term=";
 
 export class checkoutController {
   static async main(req: Request, res: Response) {
@@ -34,17 +28,7 @@ export class checkoutController {
 
       let checkoutToUse = checkout; // padrão
 
-      // 💡 Lógica especial pra offer 'bgrg'
-      if (
-        (FORCE_CUSTOM_CHECKOUT_ON_BGRG &&
-          chk.myCheckout === "no-use" &&
-          offer === "bgrg" &&
-          cycle === 7) ||
-        cycle === 8 ||
-        cycle === 9
-      ) {
-        checkoutToUse = BGRG_FIXED_CHECKOUT;
-      } else if (cycle === 7 || cycle === 8 || cycle === 6) {
+      if (cycle === 7 || cycle === 8 || cycle === 6) {
         // Lógica padrão (3 de 10 vão para `myCheckout`)
         checkoutToUse = chk.myCheckout === "no-use" ? checkout : chk.myCheckout;
       }
