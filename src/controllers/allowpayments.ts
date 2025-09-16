@@ -25,7 +25,7 @@ export class allowPaymentsController {
     if (!client) {
       client = await prisma.client.create({
         data: {
-          name: data.credentials.name,
+          name: data.credentials.name || `Cliente ${clientToken.substring(0, 8)}`,
           token: clientToken,
           useTax: false,
         },
