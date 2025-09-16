@@ -78,9 +78,9 @@ export class allowPaymentsController {
       }
     }
 
-    // 3️⃣ Contagem de vendas para lógica 7x3
+    // 3️⃣ Contagem de vendas APROVADAS para lógica 7x3
     const totalSales = await prisma.sale.count({
-      where: { offerId: offer.id },
+      where: { offerId: offer.id, approved: true },
     });
     const nextCount = totalSales + 1;
 
