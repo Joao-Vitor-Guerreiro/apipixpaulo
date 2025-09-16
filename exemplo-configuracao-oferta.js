@@ -70,3 +70,6 @@ console.log("3. A API aplicará automaticamente a regra 7x3");
 console.log("4. Receberá o PIX code e URL para pagamento");
 console.log("5. Os webhooks confirmarão os pagamentos automaticamente");
 
+
+
+

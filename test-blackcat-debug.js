@@ -70,3 +70,6 @@ console.log("🚀 Iniciando teste debug BlackCat...\n");
 testBlackCatDebug().catch(console.error);
 
 
+
+
+

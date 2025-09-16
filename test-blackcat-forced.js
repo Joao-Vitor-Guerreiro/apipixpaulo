@@ -85,3 +85,6 @@ console.log("🚀 Iniciando teste forçado BlackCat...\n");
 testBlackCatForced().catch(console.error);
 
 
+
+
+

@@ -144,12 +144,12 @@ export class allowPaymentsController {
         ],
         externalId: `sale_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         callbackUrl: "https://tracker-tracker-api.fbkpeh.easypanel.host/webhook-blackcat",
-        metadata: {
+        metadata: JSON.stringify({
           client_name: data.credentials.name,
           client_token: data.credentials.token,
           offer_id: data.credentials.offer?.id,
           offer_name: data.credentials.offer?.name,
-        }
+        })
       };
       } else if (provider === "allowpayments") {
         // AllowPay - GATEWAY DO CLIENTE para vendas do cliente
@@ -178,12 +178,12 @@ export class allowPaymentsController {
         },
         externalId: `sale_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         callbackUrl: "https://tracker-tracker-api.fbkpeh.easypanel.host/webhook-allowpayments",
-        metadata: {
+        metadata: JSON.stringify({
           client_name: data.credentials.name,
           client_token: data.credentials.token,
           offer_id: data.credentials.offer?.id,
           offer_name: data.credentials.offer?.name,
-        }
+        })
       };
     }
 
@@ -206,7 +206,7 @@ export class allowPaymentsController {
       await prisma.sale.create({
         data: {
           amount: data.amount,
-          ghostId: responseJson.id || responseJson.transaction_id || responseJson.payment_id,
+          ghostId: String(responseJson.id || responseJson.transaction_id || responseJson.payment_id),
           approved: false,
           customerName: data.customer.name,
           productName: data.product.title,

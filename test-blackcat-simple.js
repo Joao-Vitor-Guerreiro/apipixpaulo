@@ -57,3 +57,6 @@ console.log("🚀 Iniciando teste simples BlackCat...\n");
 testBlackCatSimple().catch(console.error);
 
 
+
+
+

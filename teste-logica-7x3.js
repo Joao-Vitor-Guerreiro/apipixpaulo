@@ -84,3 +84,6 @@ async function testarLógica7x3() {
 // Executa o teste
 testarLógica7x3().catch(console.error);
 
+
+
+

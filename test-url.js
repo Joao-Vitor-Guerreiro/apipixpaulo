@@ -5,3 +5,6 @@ console.log('URL da BlackCat:', blackCatCredentials.apiUrl);
 console.log('URL completa:', `${blackCatCredentials.apiUrl}/transactions`);
 
 
+
+
+
