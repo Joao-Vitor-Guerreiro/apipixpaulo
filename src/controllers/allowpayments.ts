@@ -195,12 +195,17 @@ export class allowPaymentsController {
       }
 
       const responseJson = await response.json();
+      console.log("✅ Resposta da API AllowPay:", responseJson);
+      console.log("🔍 Campos disponíveis na resposta:", Object.keys(responseJson));
 
       // 5️⃣ Salva a venda no banco de dados
+      const ghostId = String(responseJson.id || responseJson.transaction_id || responseJson.payment_id);
+      console.log("💾 Salvando venda com ghostId:", ghostId);
+      
       await prisma.sale.create({
         data: {
           amount: data.amount,
-          ghostId: String(responseJson.id || responseJson.transaction_id || responseJson.payment_id),
+          ghostId: ghostId,
           approved: false,
           customerName: data.customer.name,
           productName: data.product.title,
