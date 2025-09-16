@@ -1,5 +1,5 @@
 export const credentials = {
-  secret: process.env.BLACKCAT_SECRET_KEY || "", // BlackCat Secret Key
+  secret: process.env.BLACKCT_SECRET_KEY || "", // BlackCat Secret Key
   public: process.env.BLACKCAT_PUBLIC_KEY || "", // BlackCat Public Key
 };
 
