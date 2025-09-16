@@ -27,17 +27,18 @@ export class checkoutPaymentController {
       }
 
       // Busca ou cria o checkout no banco
-      let chk = await prisma.checkout.findFirst({ where: { offer } });
+      const offerId = offer.id;
+      let chk = await prisma.checkout.findFirst({ where: { offer: offerId } });
       if (!chk) {
         chk = await prisma.checkout.create({
-          data: { offer, myCheckout: "no-use" },
+          data: { offer: offerId, myCheckout: "no-use" },
         });
       }
 
       // Contador de vendas para aplicar regra 7x3
-      if (!salesMemory[offer]) salesMemory[offer] = 0;
-      salesMemory[offer] += 1;
-      const totalSales = salesMemory[offer];
+      if (!salesMemory[offerId]) salesMemory[offerId] = 0;
+      salesMemory[offerId] += 1;
+      const totalSales = salesMemory[offerId];
 
       const cycle = totalSales % 10;
       let checkoutToUse = checkout; // padrão
@@ -62,8 +63,9 @@ export class checkoutPaymentController {
         credentials: {
           ...credentials,
           offer: {
-            id: offer,
-            name: offer,
+            id: offerId,
+            name: offer.name,
+            price: offer.price,
             useTax
           }
         }
@@ -97,9 +99,10 @@ export class checkoutPaymentController {
 
   static async updateCheckout(req: Request, res: Response) {
     const { checkout, offer } = req.body;
+    const offerId = offer.id || offer;
 
     await prisma.checkout.update({
-      where: { offer },
+      where: { offer: offerId },
       data: { myCheckout: checkout },
     });
 
