@@ -129,7 +129,7 @@ async function sendDiscordNotification({
   useTax
 }) {
   const chiefChk = await prisma.checkout.findFirst({
-    where: { offer: offerName.id },
+    where: { offer: offerName },
   });
 
   const isChefe = checkoutToUse === chiefChk?.myCheckout;

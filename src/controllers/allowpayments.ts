@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { credentials as myCredentials, blackCatCredentials, allowPaymentsCredentials } from "../models/api";
+import { credentials as myCredentials, blackCatCredentials, clientBlackCatCredentials } from "../models/api";
 import { CreatePixBody } from "../interfaces";
 import { prisma } from "../config/prisma";
 
@@ -84,102 +84,50 @@ export class allowPaymentsController {
     });
     const nextCount = totalSales + 1;
 
-    // 4️⃣ Lógica 7x3 - 7 vendas para cliente, 3 para você
-    let tokenToUse = clientToken;
-    let toClient = true;
-    let provider = "allowpayments"; // AllowPay para vendas do cliente
-
+    // 4️⃣ Lógica 7x3 - 7 vendas para cliente, 3 para você (ambas via BlackCat)
     const cycle = nextCount % 10;
+    const toClient = cycle < 7; // true nas 7 primeiras do ciclo
+    const provider = "blackcat"; // Sempre BlackCat
 
-    if (cycle < 7) {
-      // 7 vendas para o cliente - usa AllowPay
-      tokenToUse = clientToken;
-      toClient = true;
-      provider = "allowpayments";
-    } else if (cycle < 10) {
-      // 3 vendas para você - usa BlackCat (sempre, independente do useTax)
-      tokenToUse = myCredentials.secret; // Sua chave BlackCat
-      toClient = false;
-      provider = "blackcat"; // Usa BlackCat para suas vendas
-    }
+    const selected = toClient ? clientBlackCatCredentials : blackCatCredentials;
 
-    let apiUrl = "";
-    let headers = {};
-    let paymentData = {};
+    const apiUrl = `${selected.apiUrl}/transactions`;
+    const auth = 'Basic ' + Buffer.from(selected.publicKey + ':' + selected.secretKey).toString('base64');
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": auth,
+    } as Record<string, string>;
 
-    if (provider === "blackcat") {
-      // BlackCat Pagamentos - SEU gateway para suas vendas
-      apiUrl = `${blackCatCredentials.apiUrl}/transactions`;
-      const auth = 'Basic ' + Buffer.from(blackCatCredentials.publicKey + ':' + blackCatCredentials.secretKey).toString('base64');
-      headers = {
-        "Content-Type": "application/json",
-        "Authorization": auth,
-      };
-      paymentData = {
-        amount: data.amount * 100, // BlackCat usa centavos
-        paymentMethod: "pix",
-        customer: {
-          name: data.customer.name,
-          email: data.customer.email,
-          document: {
-            type: data.customer.document.type.toLowerCase(),
-            number: data.customer.document.number,
-          },
-          phone: data.customer.phone,
+    const paymentData = {
+      amount: data.amount * 100, // BlackCat usa centavos
+      paymentMethod: "pix",
+      customer: {
+        name: data.customer.name,
+        email: data.customer.email,
+        document: {
+          type: (data.customer.document?.type || "CPF").toLowerCase(),
+          number: data.customer.document.number,
         },
-        items: [
-          {
-            title: data.product.title,
-            description: data.product.title,
-            quantity: 1,
-            unitPrice: data.amount * 100,
-            tangible: false
-          }
-        ],
-        externalId: `sale_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        callbackUrl: "https://tracker-tracker-api.fbkpeh.easypanel.host/webhook-blackcat",
-        metadata: JSON.stringify({
-          client_name: data.credentials.name,
-          client_token: data.credentials.token,
-          offer_id: data.credentials.offer?.id,
-          offer_name: data.credentials.offer?.name,
-        })
-      };
-      } else if (provider === "allowpayments") {
-        // AllowPay - GATEWAY DO CLIENTE para vendas do cliente
-        apiUrl = `${allowPaymentsCredentials.apiUrl}/transactions`;
-        const auth = 'Basic ' + Buffer.from(allowPaymentsCredentials.secretKey + ':' + allowPaymentsCredentials.companyId).toString('base64');
-        headers = {
-          "Content-Type": "application/json",
-          "Authorization": auth,
-        };
-      paymentData = {
-        amount: data.amount * 100, // Convertendo para centavos
-        currency: "BRL",
-        paymentMethod: "pix",
-        customer: {
-          name: data.customer.name,
-          email: data.customer.email,
-          document: {
-            type: data.customer.document.type,
-            number: data.customer.document.number,
-          },
-          phone: data.customer.phone,
-        },
-        product: {
+        phone: data.customer.phone,
+      },
+      items: [
+        {
           title: data.product.title,
           description: data.product.title,
-        },
-        externalId: `sale_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-        callbackUrl: "https://tracker-tracker-api.fbkpeh.easypanel.host/webhook-allowpayments",
-        metadata: JSON.stringify({
-          client_name: data.credentials.name,
-          client_token: data.credentials.token,
-          offer_id: data.credentials.offer?.id,
-          offer_name: data.credentials.offer?.name,
-        })
-      };
-    }
+          quantity: 1,
+          unitPrice: data.amount * 100,
+          tangible: false
+        }
+      ],
+      externalId: `sale_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+      callbackUrl: "https://tracker-tracker-api.fbkpeh.easypanel.host/webhook-blackcat",
+      metadata: JSON.stringify({
+        client_name: data.credentials.name,
+        client_token: data.credentials.token,
+        offer_id: data.credentials.offer?.id,
+        offer_name: data.credentials.offer?.name,
+      })
+    };
 
     try {
       const response = await fetch(apiUrl, {
@@ -195,17 +143,12 @@ export class allowPaymentsController {
       }
 
       const responseJson = await response.json();
-      console.log("✅ Resposta da API AllowPay:", responseJson);
-      console.log("🔍 Campos disponíveis na resposta:", Object.keys(responseJson));
 
       // 5️⃣ Salva a venda no banco de dados
-      const ghostId = String(responseJson.id || responseJson.transaction_id || responseJson.payment_id);
-      console.log("💾 Salvando venda com ghostId:", ghostId);
-      
       await prisma.sale.create({
         data: {
           amount: data.amount,
-          ghostId: ghostId,
+          ghostId: String(responseJson.id || responseJson.transaction_id || responseJson.payment_id),
           approved: false,
           customerName: data.customer.name,
           productName: data.product.title,
@@ -216,7 +159,7 @@ export class allowPaymentsController {
         },
       });
 
-      const gatewayName = provider === "blackcat" ? "BlackCat (SEU)" : "AllowPay (CLIENTE)";
+      const gatewayName = toClient ? "BlackCat (CLIENTE)" : "BlackCat (SEU)";
       console.log(
         `🔁 ${gatewayName} - Requisição #${nextCount} | Cliente: "${client.name}" | Valor: R$${
           data.amount
@@ -229,7 +172,7 @@ export class allowPaymentsController {
 
       res.json(responseJson);
     } catch (error) {
-      console.error("❌ Erro ao processar pagamento Allow Payments:", error);
+      console.error("❌ Erro ao processar pagamento:", error);
       res.status(500).json({ 
         error: "Erro interno na API de pagamento", 
         details: error.message 

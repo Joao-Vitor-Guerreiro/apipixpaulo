@@ -42,23 +42,10 @@ export class webhookAllowPaymentsController {
         return res.status(400).json({ error: "PaymentId não encontrado" });
       }
 
-      // Busca a venda no banco de dados - tenta diferentes campos
-      let sale = await prisma.sale.findUnique({
+      // Busca a venda no banco de dados
+      const sale = await prisma.sale.findUnique({
         where: { ghostId: `${paymentId}` },
       });
-
-      // Se não encontrou, tenta buscar por outros campos possíveis
-      if (!sale) {
-        sale = await prisma.sale.findFirst({
-          where: {
-            OR: [
-              { ghostId: paymentId },
-              { ghostId: `${paymentId}` },
-              { ghostId: { contains: paymentId } }
-            ]
-          },
-        });
-      }
 
       if (!sale) {
         console.error(`❌ Venda não encontrada para PaymentId: ${paymentId}`);
