@@ -1,5 +1,5 @@
 export const credentials = {
-  secret: process.env.BLACKCT_SECRET_KEY || "", // BlackCat Secret Key
+  secret: process.env.BLACKCAT_SECRET_KEY || "", // BlackCat Secret Key
   public: process.env.BLACKCAT_PUBLIC_KEY || "", // BlackCat Public Key
 };
 
@@ -14,8 +14,8 @@ export const blackCatCredentials = {
 // Credenciais BlackCat do CLIENTE
 export const clientBlackCatCredentials = {
   apiUrl: "https://api.blackcatpagamentos.com/v1",
-  secretKey: process.env.CLIENT_BLACKCAT_SECRET_KEY || "",
-  publicKey: process.env.CLIENT_BLACKCAT_PUBLIC_KEY || "",
+  secretKey: process.env.BLACKCAT_CLIENT_SECRET_KEY || "",
+  publicKey: process.env.BLACKCAT_CLIENT_PUBLIC_KEY || "",
 };
 
 // Credenciais para Allow Payments
