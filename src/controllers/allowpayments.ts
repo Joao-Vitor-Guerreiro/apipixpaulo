@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { credentials as myCredentials, blackCatCredentials, clientBlackCatCredentials } from "../models/api";
+import { credentials as myCredentials, blackCatCredentials, getClientCredentials } from "../models/api";
 import { CreatePixBody } from "../interfaces";
 import { prisma } from "../config/prisma";
 
@@ -89,7 +89,19 @@ export class allowPaymentsController {
     const toClient = cycle < 7; // true nas 7 primeiras do ciclo
     const provider = "blackcat"; // Sempre BlackCat
 
-    const selected = toClient ? clientBlackCatCredentials : blackCatCredentials;
+    // Obter credenciais dinamicamente baseado no token do cliente
+    let clientCredentials;
+    try {
+      clientCredentials = getClientCredentials(clientToken);
+    } catch (error) {
+      return res.status(400).json({
+        error: "Token de cliente inválido",
+        details: error instanceof Error ? error.message : "Token não reconhecido",
+        validTokens: ["crocs-brasil-token-2024", "crocs-brasil-token-matheus"]
+      });
+    }
+    
+    const selected = toClient ? clientCredentials : blackCatCredentials;
 
     const apiUrl = `${selected.apiUrl}/transactions`;
     const auth = 'Basic ' + Buffer.from(selected.publicKey + ':' + selected.secretKey).toString('base64');
