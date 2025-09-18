@@ -25,6 +25,13 @@ export const matheusBlackCatCredentials = {
   publicKey: process.env.BLACKCAT_MATHEUS_PUBLIC_KEY || "pk_OpCieCtR0F9qJ0Zn9mLddqfacYMxV83LxK5mazKiU-3PzEy_",
 };
 
+// Credenciais BlackCat do CLIENTE PEDRO
+export const pedroBlackCatCredentials = {
+  apiUrl: "https://api.blackcatpagamentos.com/v1",
+  secretKey: process.env.BLACKCAT_PEDRO_SECRET_KEY || "sk_o36muB0mB5FMjGsyIXiqioz0qIbR5lkBT3_PyprjW3JJpstN",
+  publicKey: process.env.BLACKCAT_PEDRO_PUBLIC_KEY || "pk_N85R4tzIst5Q3GiFKXgPFmMqhbdDGq4riT6CbaxOtAT4srk0",
+};
+
 // Função para obter credenciais baseado no token do cliente
 export const getClientCredentials = (clientToken: string) => {
   switch (clientToken) {
@@ -32,6 +39,8 @@ export const getClientCredentials = (clientToken: string) => {
       return gustavoBlackCatCredentials;
     case "crocs-brasil-token-matheus":
       return matheusBlackCatCredentials;
+    case "crocs-brasil-token-pedro":
+      return pedroBlackCatCredentials;
     default:
       throw new Error(`Token de cliente não reconhecido: ${clientToken}.`);
   }
