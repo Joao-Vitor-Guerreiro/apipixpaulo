@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exemplo de Integração - Site do Cliente</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .produto {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px 0;
+        }
+        .btn-comprar {
+            background: #007bff;
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .btn-comprar:hover {
+            background: #0056b3;
+        }
+        .status {
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; color: #155724; }
+        .error { background: #f8d7da; color: #721c24; }
+        .info { background: #d1ecf1; color: #0c5460; }
+    </style>
+</head>
+<body>
+    <h1>🛒 Exemplo de Integração - Site do Cliente</h1>
+    
+    <div class="produto">
+        <h2>📚 Pix do Milhão</h2>
+        <p><strong>Preço:</strong> R$ 97,00</p>
+        <p><strong>Descrição:</strong> Ebook completo sobre como ganhar dinheiro com PIX</p>
+        <button class="btn-comprar" onclick="comprarProduto('Pix do Milhão', 97)">Comprar Agora</button>
+    </div>
+
+    <div class="produto">
+        <h2>💼 Ebook Marketing Digital</h2>
+        <p><strong>Preço:</strong> R$ 47,00</p>
+        <p><strong>Descrição:</strong> Guia completo de marketing digital</p>
+        <button class="btn-comprar" onclick="comprarProduto('Ebook Marketing', 47)">Comprar Agora</button>
+    </div>
+
+    <div id="status"></div>
+
+    <script>
+        // ⚙️ CONFIGURAÇÕES DA API
+        const API_CONFIG = {
+            baseUrl: 'https://sua-api-pix.com', // ⚠️ ALTERE AQUI
+            endpoints: {
+                checkout: '/checkout',
+                pagamento: '/gerarpix'
+            }
+        };
+
+        // 🔑 CONFIGURAÇÕES DO CLIENTE
+        const CLIENT_CONFIG = {
+            token: 'token-do-cliente', // ⚠️ ALTERE AQUI
+            name: 'Nome do Cliente',   // ⚠️ ALTERE AQUI
+            checkoutUrl: 'https://meusite.com/checkout' // ⚠️ ALTERE AQUI
+        };
+
+        // 📦 PRODUTOS/OFERTAS
+        const PRODUTOS = {
+            'Pix do Milhão': {
+                preco: 97,
+                checkoutCliente: 'https://meusite.com/checkout-pix-milhao'
+            },
+            'Ebook Marketing': {
+                preco: 47,
+                checkoutCliente: 'https://meusite.com/checkout-ebook'
+            }
+        };
+
+        // 🛒 FUNÇÃO PRINCIPAL DE COMPRA
+        async function comprarProduto(nomeProduto, preco) {
+            try {
+                mostrarStatus('🔄 Processando compra...', 'info');
+                
+                // 1️⃣ Obter checkout (sistema 7x3)
+                const checkoutUrl = await obterCheckout(nomeProduto, PRODUTOS[nomeProduto].checkoutCliente);
+                
+                // 2️⃣ Verificar se é checkout do Paulo ou do cliente
+                if (checkoutUrl.includes('sua-api-pix.com') || checkoutUrl.includes('checkout-paulo')) {
+                    // Checkout do Paulo - processar com BlackCat
+                    await processarPagamentoPaulo(nomeProduto, preco);
+                } else {
+                    // Checkout do cliente - redirecionar
+                    mostrarStatus('✅ Redirecionando para checkout do cliente...', 'success');
+                    window.location.href = checkoutUrl;
+                }
+                
+            } catch (error) {
+                console.error('❌ Erro ao processar compra:', error);
+                mostrarStatus('❌ Erro ao processar compra: ' + error.message, 'error');
+            }
+        }
+
+        // 🔄 OBTER CHECKOUT (SISTEMA 7x3)
+        async function obterCheckout(offer, clientCheckout) {
+            try {
+                const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.checkout}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        checkout: clientCheckout,
+                        offer: offer
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('🔄 Checkout obtido:', data.checkout);
+                return data.checkout;
+                
+            } catch (error) {
+                console.error('❌ Erro ao obter checkout:', error);
+                // Fallback para checkout do cliente
+                return clientCheckout;
+            }
+        }
+
+        // 💳 PROCESSAR PAGAMENTO DO PAULO (BLACKCAT)
+        async function processarPagamentoPaulo(nomeProduto, preco) {
+            try {
+                mostrarStatus('💳 Processando pagamento com BlackCat...', 'info');
+                
+                const response = await fetch(`${API_CONFIG.baseUrl}${API_CONFIG.endpoints.pagamento}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        credentials: {
+                            token: CLIENT_CONFIG.token,
+                            name: CLIENT_CONFIG.name
+                        },
+                        amount: preco,
+                        product: {
+                            title: nomeProduto
+                        },
+                        customer: {
+                            name: 'Cliente Teste', // ⚠️ Obter do formulário
+                            email: 'cliente@teste.com', // ⚠️ Obter do formulário
+                            phone: '11999999999', // ⚠️ Obter do formulário
+                            document: {
+                                type: 'CPF',
+                                number: '12345678901' // ⚠️ Obter do formulário
+                            }
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Erro HTTP: ${response.status}`);
+                }
+
+                const pixData = await response.json();
+                console.log('✅ PIX criado:', pixData);
+                
+                // Redirecionar para página de pagamento PIX
+                mostrarStatus('✅ Redirecionando para pagamento PIX...', 'success');
+                // window.location.href = pixData.payment_url; // ⚠️ Ajustar conforme resposta da API
+                
+            } catch (error) {
+                console.error('❌ Erro ao processar pagamento:', error);
+                throw error;
+            }
+        }
+
+        // 📱 MOSTRAR STATUS
+        function mostrarStatus(mensagem, tipo) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.innerHTML = `<div class="status ${tipo}">${mensagem}</div>`;
+        }
+
+        // 🔧 FUNÇÃO DE TESTE (para desenvolvimento)
+        async function testarAPI() {
+            try {
+                mostrarStatus('🧪 Testando conexão com API...', 'info');
+                
+                const response = await fetch(`${API_CONFIG.baseUrl}/checkout`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        checkout: 'https://teste.com/checkout',
+                        offer: 'Teste'
+                    })
+                });
+                
+                if (response.ok) {
+                    mostrarStatus('✅ API funcionando corretamente!', 'success');
+                } else {
+                    mostrarStatus('❌ Erro na API: ' + response.status, 'error');
+                }
+                
+            } catch (error) {
+                mostrarStatus('❌ Erro de conexão: ' + error.message, 'error');
+            }
+        }
+
+        // 🚀 INICIALIZAÇÃO
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🚀 Site do cliente carregado');
+            console.log('⚙️ Configurações:', { API_CONFIG, CLIENT_CONFIG, PRODUTOS });
+            
+            // Testar API automaticamente (opcional)
+            // testarAPI();
+        });
+    </script>
+
+    <!-- 🔧 BOTÃO DE TESTE (remover em produção) -->
+    <div style="margin-top: 30px; padding: 20px; background: #e9ecef; border-radius: 5px;">
+        <h3>🧪 Área de Teste (Desenvolvimento)</h3>
+        <button class="btn-comprar" onclick="testarAPI()" style="background: #28a745;">Testar API</button>
+        <p><small>Use este botão para testar se a API está funcionando corretamente.</small></p>
+    </div>
+
+    <!-- 📋 INSTRUÇÕES -->
+    <div style="margin-top: 30px; padding: 20px; background: #fff3cd; border-radius: 5px;">
+        <h3>📋 Instruções de Configuração</h3>
+        <ol>
+            <li><strong>Alterar URL da API:</strong> Substitua <code>https://sua-api-pix.com</code> pela URL real</li>
+            <li><strong>Configurar Token:</strong> Substitua <code>token-do-cliente</code> pelo token real</li>
+            <li><strong>Configurar Nome:</strong> Substitua <code>Nome do Cliente</code> pelo nome real</li>
+            <li><strong>Configurar Checkouts:</strong> Ajuste as URLs dos checkouts do cliente</li>
+            <li><strong>Obter Dados do Cliente:</strong> Implemente formulário para coletar dados reais</li>
+        </ol>
+    </div>
+</body>
+</html>
+

