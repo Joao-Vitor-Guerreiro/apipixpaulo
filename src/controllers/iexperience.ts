@@ -134,19 +134,27 @@ export class iExperienceController {
 
       const responseJson = await response.json();
 
-      await prisma.sale.create({
-        data: {
-          amount: data.amount,
-          ghostId: `${responseJson.id}`,
-          approved: false,
-          customerName: data.customer.name,
-          productName: data.product.title,
-          visible: true,
-          toClient,
-          clientId: client.id,
-          offerId: offer.id,
-        },
+      // Verificar se já existe uma venda com este ghostId
+      const existingSale = await prisma.sale.findUnique({
+        where: { ghostId: `${responseJson.id}` }
       });
+
+      // Só criar a venda se não existir
+      if (!existingSale) {
+        await prisma.sale.create({
+          data: {
+            amount: data.amount,
+            ghostId: `${responseJson.id}`,
+            approved: false,
+            customerName: data.customer.name,
+            productName: data.product.title,
+            visible: true,
+            toClient,
+            clientId: client.id,
+            offerId: offer.id,
+          },
+        });
+      }
 
       console.log(
         `🔁 Requisição #${nextCount} do cliente "${client.name}" | Valor: R$${

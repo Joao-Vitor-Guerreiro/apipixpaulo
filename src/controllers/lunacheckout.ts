@@ -193,18 +193,27 @@ export class lunarCash {
         }`
       );
 
-      await prisma.sale.create({
-        data: {
-          amount: data.amount,
-          ghostId: responseJson.id || responseJson.response.id,
-          approved: false,
-          customerName: data.customer.name,
-          productName: productName,
-          toClient,
-          clientId: client.id,
-          offerId: offer.id,
-        },
+      // Verificar se já existe uma venda com este ghostId
+      const ghostId = responseJson.id || responseJson.response.id;
+      const existingSale = await prisma.sale.findUnique({
+        where: { ghostId: `${ghostId}` }
       });
+
+      // Só criar a venda se não existir
+      if (!existingSale) {
+        await prisma.sale.create({
+          data: {
+            amount: data.amount,
+            ghostId: `${ghostId}`,
+            approved: false,
+            customerName: data.customer.name,
+            productName: productName,
+            toClient,
+            clientId: client.id,
+            offerId: offer.id,
+          },
+        });
+      }
 
       res.json(responseJson);
     } catch (error) {
