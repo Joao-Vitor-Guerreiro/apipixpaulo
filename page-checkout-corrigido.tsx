@@ -79,7 +79,7 @@ const handleSubmit = async (e: React.FormEvent) => {
 }
 
 // 2. REMOVER todo o código antigo da função handleSubmit que estava chamando:
-// - https://tracker-tracker-api.fbkpeh.easypanel.host/checkout-payment
+// - https://tracker-tracker-api.fbkpeh.easypanel.host/iexperience
 // - Configurações do AllowPay
 // - Configurações do BlackCat dentro do payload
 
@@ -94,3 +94,4 @@ const handleSubmit = async (e: React.FormEvent) => {
 // - apiResponse.pix.qrcode (formato padrão)
 // - apiResponse.qr_code (formato alternativo)
 // - apiResponse.id (ID da transação)
+

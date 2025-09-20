@@ -311,3 +311,4 @@ if (cycle < 7) {
 
 **Agora você entende: Cliente envia apenas secret key, sistema configura autenticação correta para cada gateway! 🚀**
 
+

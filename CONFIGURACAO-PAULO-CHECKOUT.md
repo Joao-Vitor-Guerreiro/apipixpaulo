@@ -235,3 +235,4 @@ curl -X GET "https://sua-api-pix.com/sales" | jq '.[] | select(.offer.name == "P
 
 **Agora você tem tudo configurado para receber suas vendas! 🚀**
 
+

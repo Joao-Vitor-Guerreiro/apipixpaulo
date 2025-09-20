@@ -80,3 +80,4 @@ const handleSubmit = async (e: React.FormEvent) => {
 // 2. A chamada para https://tracker-tracker-api.fbkpeh.easypanel.host/checkout-payment
 // 3. As configurações do AllowPay e BlackCat dentro do payload
 // 4. Os campos paymentProvider, gateway, blackcat, allowpay, allowPay
+

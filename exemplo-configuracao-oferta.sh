@@ -192,3 +192,4 @@ echo ""
 echo "🎉 Configuração da oferta '$OFERTA_NOME' concluída!"
 echo "🚀 Agora o cliente pode integrar e começar a vender!"
 
+

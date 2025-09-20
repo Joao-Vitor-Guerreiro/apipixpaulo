@@ -37,3 +37,4 @@ Após a migração, seu `page.tsx` irá:
 ## 🎯 **MIGRAÇÃO COMPLETA!**
 
 Siga estes passos e seu `page.tsx` funcionará perfeitamente! 🚀
+

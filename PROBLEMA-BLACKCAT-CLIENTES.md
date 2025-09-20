@@ -192,3 +192,4 @@ const auth = 'Basic ' + Buffer.from(publicKeyToUse + ':' + tokenToUse).toString(
 
 **Agora você entende o problema e a solução! 🚀**
 
+

@@ -240,3 +240,4 @@ const response = await fetch('https://sua-api-pix.com/gerarpix', {
 
 **Agora você entende como funciona o useTax e sua relação com a regra 7x3! 🚀**
 
+

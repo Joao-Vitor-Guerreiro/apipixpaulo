@@ -328,3 +328,4 @@ const response = await fetch('https://api.blackcatpagamentos.com/v1/transactions
 
 **Agora você entende: Cada cliente tem suas próprias credenciais do BlackCat e o sistema 7x3 funciona para cada um individualmente! 🚀**
 
+

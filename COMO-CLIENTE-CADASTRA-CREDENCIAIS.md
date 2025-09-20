@@ -289,3 +289,4 @@ async function processarVenda(dadosVenda) {
 
 **Agora você entende: NÃO HÁ CADASTRO MANUAL! O cliente envia credenciais a cada venda e o sistema cria tudo automaticamente! 🚀**
 
+

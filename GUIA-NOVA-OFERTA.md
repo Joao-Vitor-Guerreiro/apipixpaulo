@@ -324,3 +324,4 @@ async function comprarCurso() {
 
 **Agora você sabe como configurar uma nova oferta e como o sistema encontra as credenciais! 🚀**
 
+

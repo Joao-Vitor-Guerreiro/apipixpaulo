@@ -327,3 +327,4 @@ function logVenda(dadosVenda, resultado) {
 
 console.log('🚀 Sistema de credenciais configurado!');
 
+

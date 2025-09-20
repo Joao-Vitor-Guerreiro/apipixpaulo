@@ -247,3 +247,4 @@ ofertaPaulo → 100% Paulo (sempre)
 
 **Agora você entende como o sistema decide qual controlador usar! 🚀**
 
+

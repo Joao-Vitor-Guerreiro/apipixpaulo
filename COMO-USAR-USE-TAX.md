@@ -282,3 +282,4 @@ curl -X POST https://sua-api-pix.com/use-tax \
 
 **Agora você sabe exatamente como usar a rota /use-tax! 🚀**
 
+

@@ -424,3 +424,4 @@ INSERT INTO "Sale" VALUES (
 
 **Agora você entende como funcionam as credenciais e a criação de dados no banco! 🚀**
 
+

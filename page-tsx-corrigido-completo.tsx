@@ -87,3 +87,4 @@ const handleSubmit = async (e: React.FormEvent) => {
 // MANTER no seu page.tsx:
 // - Todo o resto do código (estados, funções, JSX)
 // - Apenas substituir a função handleSubmit
+

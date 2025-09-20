@@ -81,3 +81,4 @@ const handleSubmit = async (e: React.FormEvent) => {
 // - Configurações do BlackCat dentro do payload
 // - checkoutPayload
 // - allowpay, allowPay, paymentProvider, gateway, blackcat
+

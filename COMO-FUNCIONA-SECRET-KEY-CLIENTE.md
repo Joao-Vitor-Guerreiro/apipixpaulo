@@ -248,3 +248,4 @@ const response = await fetch('https://api.pagseguro.com/checkouts', {
 
 **Agora você entende: O cliente envia sua secret key a cada venda, sua API salva no banco e usa para processar pagamentos! 🚀**
 
+
