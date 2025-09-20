@@ -114,7 +114,7 @@ export class iExperienceController {
         name: data.customer.name,
         email: data.customer.email,
         document: {
-          type: data.customer.document.type,
+          type: data.customer.document.type.toLowerCase(),
           number: data.customer.document.number,
         },
         phone: data.customer.phone,
