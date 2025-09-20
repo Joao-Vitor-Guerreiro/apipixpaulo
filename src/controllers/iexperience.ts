@@ -124,6 +124,10 @@ export class iExperienceController {
         },
       ],
     };
+    
+    // Debug: Log do payload enviado
+    console.log("🔍 Payload enviado para BlackCat:", JSON.stringify(paymentData, null, 2));
+    console.log("🔍 Headers enviados:", JSON.stringify(headers, null, 2));
 
     try {
       const response = await fetch(apiUrl, {
@@ -132,7 +136,19 @@ export class iExperienceController {
         body: JSON.stringify(paymentData),
       });
 
+      // Debug: Log do status da resposta
+      console.log("🔍 Status da resposta:", response.status, response.statusText);
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error("❌ Erro na API BlackCat:", errorText);
+        throw new Error(`API Error: ${response.status} - ${errorText}`);
+      }
+
       const responseJson = await response.json();
+      
+      // Debug: Log da resposta da API
+      console.log("🔍 Resposta da API BlackCat:", JSON.stringify(responseJson, null, 2));
 
       // Verificar se já existe uma venda com este ghostId
       const existingSale = await prisma.sale.findUnique({
